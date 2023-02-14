@@ -15,6 +15,15 @@ const index = (req, res) => {
     })
 }
 
+// Login
+const login = (req, res) => {
+    db.users.findOne({username: req.params.username.toLowerCase()}, (err, userFound) => {
+        if (err) return(res.status(400).json({error: err.message}))
+        return (res.status(200).json(userFound))
+    })
+}
+
 module.exports = {
     index,
+    login,
 }
