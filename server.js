@@ -10,9 +10,12 @@ const PORT = process.env.PORT || 8000;
 require("./config/db.connection")
 
 // ROUTES
+const routes = require("./routes")
 app.get('/', (req, res) => {
     res.send("Spentrace Back End")
 })
+app.use("/users", routes.users);
+app.use("/plans", routes.users)
 
 // LISTEN
 app.listen(PORT, () => {
