@@ -16,7 +16,7 @@ const index = (req, res) => {
     })
 }
 
-// Login
+// LOGIN
 const login = (req, res) => {
     // console.log("Body", req.body)
     db.users.findOne({username: req.body.username.toLowerCase()}, (err, userFound) => {
@@ -27,7 +27,23 @@ const login = (req, res) => {
     })
 }
 
+// REGISTER
+const register = (req,res) => {
+    return res.status(400).json({Error: "Registration is closed for now."})
+    const salt = bcrypt.genSaltSync(10);
+    req.body.username = req.body.username.toLowerCase();
+    req.body.password = bcrypt.hashSync(req.body.password, salt);
+    db.users.create(req.body, (err, createdUser) => {
+        try{
+            if (err) return res.status(400).json({error: err.message})
+            return res.status(200).json(createdUser);
+        } catch {
+            return res.status(200).json(createdUser)
+        }
+    })
+}
 module.exports = {
     index,
     login,
+    register,
 }
