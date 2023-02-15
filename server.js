@@ -9,6 +9,10 @@ const PORT = process.env.PORT || 8000;
 // DATABASE
 require("./config/db.connection")
 
+// MIDDLEWARE
+app.use(express.json());
+app.use(express.urlencoded({extended: true}))
+
 // ROUTES
 const routes = require("./routes")
 app.get('/', (req, res) => {
