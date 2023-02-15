@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
     res.send("Spentrace Back End")
 })
 app.use("/users", routes.users);
-app.use("/plans", routes.users)
+app.use("/plans", routes.plans)
 
 // LISTEN
 app.listen(PORT, () => {
