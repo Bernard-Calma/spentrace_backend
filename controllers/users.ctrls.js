@@ -1,4 +1,5 @@
-const db = require("../models")
+const db = require("../models");
+const bcrypt = require("bcrypt"); // To hash password
 
 // ROUTES
 
@@ -17,9 +18,11 @@ const index = (req, res) => {
 
 // Login
 const login = (req, res) => {
-    console.log("Body", req.body)
+    // console.log("Body", req.body)
     db.users.findOne({username: req.body.username.toLowerCase()}, (err, userFound) => {
         if (err) return(res.status(400).json({error: err.message}))
+        if (!userFound) return(res.status(404).json({error: "User not found"}))
+        if (!bcrypt.compareSync(req.body.password, userFound.password)) return(res.status(400).json({error: "Incorrect Password"}))
         return (res.status(200).json(userFound))
     })
 }
