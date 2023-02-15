@@ -3,6 +3,20 @@ const express = require('express')
 const app = express();
 require("dotenv").config()
 
+// CORS
+const cors = require("cors")
+const whiteList = ["https://localhost3000"]
+const corsOption = {
+    origin: (origin, callback) => {
+        if(whiteList.indexOf(origin) !== -1 || !origin) {
+            callback(null, true)
+        } else {
+            callback(new Error("Not allowed by CORS"))
+        }
+    }
+}
+app.use(cors())
+
 // PORT
 const PORT = process.env.PORT || 8000;
 
