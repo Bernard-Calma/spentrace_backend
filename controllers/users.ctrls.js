@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt"); // To hash password
 // INDEX
 // Get all users data
 const index = (req, res) => {
+    console.log("All users info retreived")
     db.users.find({}, (err, allUsers) => {
         try {
             if (err) return res.status(404).json({error: err.message})
@@ -18,11 +19,12 @@ const index = (req, res) => {
 
 // LOGIN
 const login = (req, res) => {
-    // console.log("Body", req.body)
+    console.log("Username tried to login: ", req.body.username)
     db.users.findOne({username: req.body.username.toLowerCase()}, (err, userFound) => {
         if (err) return(res.status(400).json({error: err.message}))
         if (!userFound) return(res.status(404).json({error: "User not found"}))
         if (!bcrypt.compareSync(req.body.password, userFound.password)) return(res.status(400).json({error: "Incorrect Password"}))
+        userFound.password = undefined // Remove password when sending back user data
         return (res.status(200).json(userFound))
     })
 }
