@@ -10,11 +10,6 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
 }))
-app.use((req, res, next) => {
-    // res.locals.currentUser = "test"
-    console.log("App use",req.session);
-    next();
-})
 // CORS
 const cors = require("cors")
 const whiteList = ["http://localhost:3000"]
@@ -45,6 +40,11 @@ app.get('/', (req, res) => {
     res.send("Spentrace Back End")
 })
 app.use("/users", routes.users);
+app.use("/plans", (req, res, next) => {
+    res.locals.currentUser = req.session.currentUser
+    console.log("App use",req.session);
+    next();
+})
 app.use("/plans", routes.plans)
 
 // LISTEN
