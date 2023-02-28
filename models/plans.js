@@ -15,9 +15,9 @@ const planSchema = mongoose.Schema({
         required: true,
     },
     notes: String,
-    userID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+    userId: {
+        type: String,
+        required: true
     }
 })
 

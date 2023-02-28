@@ -2,10 +2,28 @@
 const express = require('express')
 const app = express();
 require("dotenv").config()
+// SESSIONS
+const session = require("express-session")
+const SESSION_SECRET = process.env.SESSION_SECRET
+app.use(session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+        httpOnly: true,
+        maxAge: 360000
+    }
+}))
+
+app.use((req, res, next) => {
+    // res.locals.currentUser = "test"
+    console.log("App use",req.session);
+    next();
+})
 
 // CORS
 const cors = require("cors")
-const whiteList = ["https://localhost3000"]
+const whiteList = ["http://localhost:3000"]
 const corsOption = {
     origin: (origin, callback) => {
         if(whiteList.indexOf(origin) !== -1 || !origin) {
@@ -13,9 +31,9 @@ const corsOption = {
         } else {
             callback(new Error("Not allowed by CORS"))
         }
-    }
+    }, credentials: true
 }
-app.use(cors())
+app.use(cors(corsOption))
 
 // PORT
 const PORT = process.env.PORT || 8000;
