@@ -25,6 +25,7 @@ const login = (req, res) => {
         if (!bcrypt.compareSync(req.body.password, userFound.password)) return(res.status(401).json({message: "Invalid Username or Password"}))
         userFound.password = undefined // Remove password when sending back user data
         req.session.currentUser = userFound; // Add user to session
+        console.log("Login Session:", req.session)
         return (res.status(200).json(userFound))
     })
 }
@@ -44,8 +45,17 @@ const register = (req,res) => {
         }
     })
 }
+
+// SIGNOUT
+const signout = (req,res) => {
+    console.log('User Signout: ', req.session.currentUser)
+    req.session.destroy()
+    return res.status(200).json({message: "Logout Successfull"})
+}
+
 module.exports = {
     index,
     login,
     register,
+    signout
 }

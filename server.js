@@ -4,23 +4,17 @@ const app = express();
 require("dotenv").config()
 // SESSIONS
 const session = require("express-session")
-const SESSION_SECRET = process.env.SESSION_SECRET
+app.set('trust proxy', 1)
 app.use(session({
-    secret: SESSION_SECRET,
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { 
-        httpOnly: true,
-        maxAge: 360000
-    }
 }))
-
 app.use((req, res, next) => {
     // res.locals.currentUser = "test"
     console.log("App use",req.session);
     next();
 })
-
 // CORS
 const cors = require("cors")
 const whiteList = ["http://localhost:3000"]
