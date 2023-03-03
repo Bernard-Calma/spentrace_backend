@@ -6,7 +6,7 @@ const db = require("../models")
 const index = (req, res) => {
     console.log("Index route called");
     // console.log("Plans Index Session: ", req.params.id)
-    db.plans.find({}, (err, allPlans) => {
+    db.plans.find({userId: req.params.id}, (err, allPlans) => {
         // console.log("Plans Index allPlans: ", allPlans)
         try {
             if (err) return res.status(404).json({error: err.message})
