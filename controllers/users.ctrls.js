@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt"); // To hash password
 // Get all users data
 const index = (req, res) => {
     console.log("All users info retreived")
+    console.log(req.session)
     db.users.find({}, (err, allUsers) => {
         try {
             if (err) return res.status(404).json({error: err.message})

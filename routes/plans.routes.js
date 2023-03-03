@@ -16,6 +16,9 @@ const authRequired = (req, res, next) => {
 	// }
 }
 
+router.post('/', authRequired, ctrls.plans.create)
 router.get('/:id', authRequired, ctrls.plans.index)
+router.delete('/:id', authRequired, ctrls.plans.destroy)
+
 
 module.exports = router;
