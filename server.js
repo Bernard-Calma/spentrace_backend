@@ -20,7 +20,7 @@ const corsOption = {
         } else {
             callback(new Error("Not allowed by CORS"))
         }
-    }, credentials: true
+    }
 }
 app.use(cors(corsOption))
 
@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
 app.use("/users", routes.users);
 app.use("/plans", (req, res, next) => {
     res.locals.currentUser = req.session.currentUser
-    console.log("App use",req.session);
+    // console.log("App use",req.session);
     next();
 })
 app.use("/plans", routes.plans)
