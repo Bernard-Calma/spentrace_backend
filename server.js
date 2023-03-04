@@ -33,9 +33,7 @@ require("./config/db.connection")
 // MIDDLEWARE
 app.use(express.json());
 app.use(express.urlencoded({extended: true}))
-app.options("*", cors())
 // ROUTES
-app.options('*', cors())
 const routes = require("./routes")
 app.get('/', (req, res) => {
     res.send("Spentrace Back End")
