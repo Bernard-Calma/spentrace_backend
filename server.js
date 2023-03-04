@@ -12,7 +12,7 @@ app.use(session({
 }))
 // CORS
 const cors = require("cors")
-const whiteList = ["http://localhost:3000"]
+const whiteList = ["http://localhost:3000", process.env.CLIENT_URL ]
 const corsOption = {
     origin: (origin, callback) => {
         if(whiteList.indexOf(origin) !== -1 || !origin) {
@@ -50,4 +50,5 @@ app.use("/plans", routes.plans)
 // LISTEN
 app.listen(PORT, () => {
     console.log(`Server is running at PORT: ${PORT}`)
+    console.log(`Server is running ${process.env}`)
 })
