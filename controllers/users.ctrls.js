@@ -64,7 +64,7 @@ const register = (req,res) => {
 const signout = (req,res) => {
     console.log('User Signout: ', req.session.currentUser)
     req.session.destroy()
-    return res.status(200).json({message: "Logout Successfull"})
+    return res.status(200).json({message: "Logout Successful"})
 }
 
 module.exports = {
