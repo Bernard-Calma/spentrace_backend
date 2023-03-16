@@ -49,5 +49,5 @@ app.use("/plans", routes.plans)
 // LISTEN
 app.listen(PORT, () => {
     console.log(`Server is running at PORT: ${PORT}`)
-    console.log(`Server is running ${process.env}`)
+    console.log(`Server is running ${process.env.NODE_ENV || 'development'}`)
 })
