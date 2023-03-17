@@ -12,7 +12,7 @@ app.use(session({
 }))
 // CORS
 const cors = require("cors")
-const whiteList = ["http://localhost:3000", process.env.CLIENT_URL, process.env.CLIENT_URL_HTTP, process.env.HEROKU_URL, process.env.HEROKU_URL_HTTP ]
+const whiteList = ["http://localhost:3000", "http://192.168.1.80:3000", process.env.CLIENT_URL, process.env.CLIENT_URL_HTTP, process.env.HEROKU_URL, process.env.HEROKU_URL_HTTP ]
 const corsOption = {
     origin: (origin, callback) => {
         if(whiteList.indexOf(origin) !== -1 || !origin) {
@@ -23,6 +23,9 @@ const corsOption = {
     }, credentials: true
 }
 app.use(cors(corsOption))
+
+// ENV
+var env = process.env.NODE_ENV || 'development'
 
 // PORT
 const PORT = process.env.PORT || 8000;
@@ -49,5 +52,5 @@ app.use("/plans", routes.plans)
 // LISTEN
 app.listen(PORT, () => {
     console.log(`Server is running at PORT: ${PORT}`)
-    console.log(`Server is running ${process.env.NODE_ENV || 'development'}`)
+    console.log(`Server is running ${env}`)
 })
