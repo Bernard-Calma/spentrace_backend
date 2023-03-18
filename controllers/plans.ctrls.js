@@ -33,7 +33,6 @@ const create = (req, res) => {
 
 const destroy = (req, res) => {
     console.log("Delete requested")
-    console.log(req.params.id)
     db.plans.findByIdAndDelete(req.params.id, (err, deletedVideo) => {
         try {
             if (err) return (res.status(400).json({err: err.message}))
@@ -44,9 +43,9 @@ const destroy = (req, res) => {
     })
 }
 
-const edit = (req, res) => {
-    console.log("Edit Route Called")
-    db.plans.findByIdAndUpdate(req.body._id, {
+const update = (req, res) => {
+    console.log("Edit Route Called", req.params.id)
+    db.plans.findByIdAndUpdate(req.params.id, {
         $set: req.body,
     }, {
         new: true,
@@ -63,5 +62,6 @@ const edit = (req, res) => {
 module.exports = {
     index,
     create,
-    destroy
+    destroy,
+    update,
 }
