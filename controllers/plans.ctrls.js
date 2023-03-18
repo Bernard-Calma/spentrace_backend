@@ -14,7 +14,7 @@ const index = (req, res) => {
         } catch {
             return res.status(200).json(allPlans)
         }
-    })
+    }).sort({date: "asc"})
 }
 
 const create = (req, res) => {
