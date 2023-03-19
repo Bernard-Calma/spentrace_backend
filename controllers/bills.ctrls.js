@@ -14,3 +14,7 @@ const index = (req, res) => {
         }
     }).sort({date: "asc"})
 }
+
+module.exports = {
+    index
+}
