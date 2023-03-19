@@ -17,5 +17,6 @@ const authRequired = (req, res, next) => {
 }
 
 router.get('/:id', authRequired, ctrls.bills.index)
+router.post('/', authRequired, ctrls.bills.create)
 
 module.exports = router;

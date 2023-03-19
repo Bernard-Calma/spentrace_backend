@@ -48,6 +48,7 @@ app.use("/plans", (req, res, next) => {
     next();
 })
 app.use("/plans", routes.plans)
+app.use('/bills', routes.bills)
 
 // LISTEN
 app.listen(PORT, () => {
