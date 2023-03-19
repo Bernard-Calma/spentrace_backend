@@ -1,4 +1,5 @@
 module.exports = {
     plans: require("./plans"),
-    users: require("./users")
+    users: require("./users"),
+    bills: require("./bills")
 }
