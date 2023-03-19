@@ -1,6 +1,5 @@
 const db = require("../models");
 const bcrypt = require("bcrypt"); // To hash password
-const { create } = require("../models/plans");
 // ROUTES
 // INDEX
 // Get all users data
