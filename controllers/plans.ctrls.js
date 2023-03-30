@@ -30,7 +30,7 @@ const create = (req, res) => {
     })
 }
 
-const destroy = (req, res) => {
+const destroy = (req, res) => { 
     console.log("Delete requested")
     db.plans.findByIdAndDelete(req.params.id, (err, deletedVideo) => {
         try {

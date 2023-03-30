@@ -28,7 +28,21 @@ const create = (req, res) => {
     })
 }
 
+const destroy = (req, res) => {
+    console.log("Delete Route Called")
+    db.bills.findByIdAndDelete(req.params.id, (err, deletedBIll) => {
+        try {
+            if (err) return (res.status(400).json({err: err.message}))
+            console.log("Successfully Deleted", deletedBIll)
+            return res.status(200).json({message: deletedBIll})
+        } catch {
+            return res.status(200).json({message: deletedBIll})
+        }
+    })
+}
+
 module.exports = {
     index,
-    create
+    create,
+    destroy
 }

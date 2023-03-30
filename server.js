@@ -1,5 +1,6 @@
 // EXPRESS
 const express = require('express')
+const methodOverride = require('method-override')
 const app = express();
 require("dotenv").config()
 // SESSIONS
@@ -36,6 +37,7 @@ require("./config/db.connection")
 // MIDDLEWARE
 app.use(express.json());
 app.use(express.urlencoded({extended: true}))
+app.use(methodOverride('_method'))
 // ROUTES
 const routes = require("./routes")
 app.get('/', (req, res) => {
