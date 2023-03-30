@@ -23,8 +23,8 @@ const billsSchema = mongoose.Schema({
         default: false
     },
     repeat: {
-        type: Number,
-        default: 0
+        type: String,
+        default: "never"
     },
     endRepeat: {
         type: Date,
