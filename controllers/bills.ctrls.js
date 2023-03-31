@@ -41,8 +41,14 @@ const destroy = (req, res) => {
     })
 }
 
+const edit = (req, res) => {
+    console.log("Edit Bill Called: ", req.body)
+    return res.status(200)
+}
+
 module.exports = {
     index,
     create,
-    destroy
+    destroy,
+    edit
 }
