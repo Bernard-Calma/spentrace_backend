@@ -33,7 +33,7 @@ const destroy = (req, res) => {
     db.bills.findByIdAndDelete(req.params.id, (err, deletedBIll) => {
         try {
             if (err) return (res.status(400).json({err: err.message}))
-            console.log("Successfully Deleted", deletedBIll)
+            console.log("Successfully Deleted", deletedBIll._id)
             return res.status(200).json({message: deletedBIll})
         } catch {
             return res.status(200).json({message: deletedBIll})
@@ -42,8 +42,16 @@ const destroy = (req, res) => {
 }
 
 const edit = (req, res) => {
-    console.log("Edit Bill Called: ", req.body)
-    return res.status(200)
+    console.log("Edit Bill Called: ")
+    db.bills.findByIdAndUpdate(req.params.id, req.body, (err, editedBill) => {
+        try {
+            if (err) return (res.status(400).json({err: err.message}))
+            console.log("Successfully Edited", editedBill._id)
+            return res.status(200).json({message: editedBill})
+        } catch {
+            return res.status(200).json({message: editedBill})
+        }
+    })
 }
 
 module.exports = {
