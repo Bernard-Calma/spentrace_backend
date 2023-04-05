@@ -20,14 +20,14 @@ const index = (req, res) => {
 const login = (req, res) => {
     console.log("Username tried to login: ", req.body.username)
     db.users.findOne({username: req.body.username.toLowerCase()}, (err, userFound) => {
-        // console.log("Login User Found: ", userFound)
-        if (err) return(res.status(400).json({error: err.message}))
-        if (!userFound) return(res.status(404).json({error: "User not found"}))
-        if (!bcrypt.compareSync(req.body.password, userFound.password)) return(res.status(401).json({message: "Invalid Username or Password"}))
-        userFound.password = undefined // Remove password when sending back user data
-        req.session.currentUser = userFound; // Add user to session
-        // console.log("Login Session:", req.session)
-        return (res.status(200).json(userFound))
+        if (!userFound) return res.status(404).json({message: "Username is not registered"})
+        else if (!bcrypt.compareSync(req.body.password, userFound.password)) return(res.status(401).json({message: "Invalid Username or Password"}))
+        else {
+            userFound.password = undefined // Remove password when sending back user data
+            req.session.currentUser = userFound; // Add user to session
+            // console.log("Login Session:", req.session)
+            return (res.status(200).json(userFound))
+        }
     })
 }
 
