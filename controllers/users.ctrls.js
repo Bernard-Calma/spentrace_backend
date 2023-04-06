@@ -47,7 +47,9 @@ const register = (req,res) => {
             res.status(404).json(err)
         } else {
             passport.authenticate('local')(req, res, () => {
-                res.status(201).json(registeredUser)
+                registeredUser.hash = undefined;
+                registeredUser.salt = undefined;
+                res.status(201).json(registeredUser);
             })
         }
     }
