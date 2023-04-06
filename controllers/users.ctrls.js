@@ -38,6 +38,7 @@ const register = (req,res) => {
     console.log(req.body)
     db.Users.register({
         username: req.body.username,
+        email: req.body.email
     },
     req.body.password,
     (err, registeredUser) => {
