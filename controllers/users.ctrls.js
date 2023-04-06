@@ -25,18 +25,18 @@ const login = (req, res) => {
         password: req.body.password
     })
     req.login(user, (err) => {
-        if(err) {
-            res.status(400).send(err)
-        } else {
-            passport.authenticate('local')(req, res, () => {
-                const authUser = req.user;
-                // Remove salt and hash when sending back user info
-                authUser.salt = undefined,
-                authUser.hash = undefined
-                console.log(authUser)
-                res.status(200).send(authUser)
-            })
-        }
+        console.log(req.user._id)
+        // if(err) {
+        //     res.status(400).send(err)
+        // } else {
+        //     passport.authenticate('local')(req, res, () => {
+        //         const authUser = req.user;
+        //         // Remove salt and hash when sending back user info
+        //         authUser.salt = undefined,
+        //         authUser.hash = undefined
+        //         res.status(200).send(authUser)
+        //     })
+        // }
     })
     // console.log("Username tried to login: ", req.body.username)
     // db.Users.findOne({username: req.body.username.toLowerCase()}, (err, userFound) => {
@@ -77,9 +77,10 @@ const register = (req,res) => {
 
 // SIGNOUT
 const signout = (req,res) => {
-    console.log('User Signout: ', req.session.currentUser)
-    req.session.destroy()
-    return res.status(200).json({message: "Logout Successful"})
+    req.logout()
+    // console.log('User Signout: ', req.session.currentUser)
+    // req.session.destroy()
+    // return res.status(200).json({message: "Logout Successful"})
 }
 
 module.exports = {
