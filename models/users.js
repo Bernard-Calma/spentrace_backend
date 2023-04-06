@@ -14,6 +14,10 @@ const userSchema = mongoose.Schema({
         required: true,
         unique: true
     },
+    regitrationDate: {
+        type: Date,
+        default: Date
+    },
     level: {
         type: Number,
         default: 0,
