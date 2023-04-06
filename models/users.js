@@ -10,8 +10,10 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    level: Number,
-    default: 0,
+    level: {
+        type: Number,
+        default: 0,
+    }
 })
 
 const User = mongoose.model("User", userSchema);

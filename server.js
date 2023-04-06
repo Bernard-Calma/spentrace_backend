@@ -1,8 +1,9 @@
+require("dotenv").config()
 // EXPRESS
 const express = require('express')
 const methodOverride = require('method-override')
 const app = express();
-require("dotenv").config()
+
 // SESSIONS
 const session = require("express-session")
 app.set('trust proxy', 1)
