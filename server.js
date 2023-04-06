@@ -4,6 +4,9 @@ const express = require('express')
 const methodOverride = require('method-override')
 const app = express();
 
+// Passport
+const passport = require("passport");
+
 // SESSIONS
 const session = require("express-session")
 app.set('trust proxy', 1)
@@ -11,7 +14,10 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-}))
+}));
+
+app.use(passport.initialize())
+app.use(passport.session())
 // CORS
 const cors = require("cors")
 const whiteList = ["http://localhost:3000", "http://192.168.1.80:3000", process.env.CLIENT_URL, process.env.CLIENT_URL_HTTP, process.env.HEROKU_URL, process.env.HEROKU_URL_HTTP ]
