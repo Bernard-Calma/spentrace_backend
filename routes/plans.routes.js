@@ -16,6 +16,7 @@ const authRequired = (req, res, next) => {
 	// }
 }
 
+router.get('/', authRequired, ctrls.plans.index)
 router.post('/', authRequired, ctrls.plans.create)
 router.post('/:id', ctrls.plans.update)
 router.get('/:id', authRequired, ctrls.plans.index)

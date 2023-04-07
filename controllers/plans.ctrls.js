@@ -3,7 +3,9 @@ const db = require("../models")
 // ROUTES
 // INDEX
 // Get all plans data
-const index = (req, res) => {
+const index = (req, res) => { 
+    req.session.currentUser = "Test"
+    console.log("Session: ", req.session)
     console.log("Index route called");
     // console.log("Plans Index Session: ", req.params.id)
     db.plans.find({userId: req.params.id}, (err, allPlans) => {

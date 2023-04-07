@@ -1,7 +1,7 @@
 const db = require("../models");
 const bcrypt = require("bcrypt"); // To hash password
 const passport = require("passport");
-const User = require("../models/users");
+const { application } = require("express");
 // ROUTES
 // INDEX
 // Get all users data
@@ -19,24 +19,28 @@ const index = (req, res) => {
 }
 
 // LOGIN
-const login = (req, res) => {
-    const user = new User({
+const loginUser = (req, res) => {
+    req.session.cookie.currentUser = {username: "Test"}
+    console.log(req.session)
+    const user = new db.Users({
         username: req.body.username,
         password: req.body.password
     })
-    req.login(user, (err) => {
-        console.log(req.user._id)
-        // if(err) {
-        //     res.status(400).send(err)
-        // } else {
-        //     passport.authenticate('local')(req, res, () => {
-        //         const authUser = req.user;
-        //         // Remove salt and hash when sending back user info
-        //         authUser.salt = undefined,
-        //         authUser.hash = undefined
-        //         res.status(200).send(authUser)
-        //     })
-        // }
+    req.login(user, err => {
+        
+        if(err) {
+            console.log(user)
+            res.status(400).send(err)
+        } else {
+            passport.authenticate('local')(req, res, () => {
+                console.log("User: ", req.session.currentUser)
+                const authUser = req.user;
+                // Remove salt and hash when sending back user info
+                authUser.salt = undefined,
+                authUser.hash = undefined
+                res.status(200).send(authUser)
+            })
+        }
     })
     // console.log("Username tried to login: ", req.body.username)
     // db.Users.findOne({username: req.body.username.toLowerCase()}, (err, userFound) => {
@@ -85,7 +89,7 @@ const signout = (req,res) => {
 
 module.exports = {
     index,
-    login,
+    loginUser,
     register,
     signout
 }

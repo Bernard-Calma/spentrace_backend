@@ -2,9 +2,12 @@
 require("dotenv").config()
 const express = require('express')
 const methodOverride = require('method-override')
-const session = require("express-session")
+// Session
+const session = require('express-session')
+const MongoStore = require('connect-mongo')
 const passport = require("passport");
 const cors = require("cors")
+const app = express();
 //  ------------------- END OF IMPORT --------------------
 
 // ENV
@@ -24,37 +27,42 @@ const corsOption = {
 //  ------------------- END OF ENV --------------------
 
 // Middleware
-const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}))
 app.use(methodOverride('_method'))
+// CORS
+app.use(cors(corsOption))
 // Session
 app.set('trust proxy', 1)
 app.use(session({
-    secret: process.env.SESSION_SECRET,
+    secret: "secret",
     resave: false,
     saveUninitialized: false,
+    cookie: {
+        maxAge: 1000 * 60 * 60,
+        sameSite: 'none',
+        secure: true
+    },
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URL,
+        ttl: 100 * 60 * 60
+    })
 }));
 // Passport
 app.use(passport.initialize())
 app.use(passport.session())
-// CORS
-app.use(cors(corsOption))
+
 //  ------------------- END OF MIDDLEWARE --------------------
 
 // DATABASE
 require("./config/db.connection")
-
 // ROUTES
 const routes = require("./routes")
-app.get('/', (req, res) => {
-    res.send("Spentrace Back End")
+app.use('/', (req, res) => {
+    console.log(req.session)
+    res.send("Spentrace Backend")
 })
 app.use("/users", routes.users);
-app.use("/plans", (req, res, next) => {
-    res.locals.currentUser = req.session.currentUser
-    next();
-})
 app.use("/plans", routes.plans)
 app.use('/bills', routes.bills)
 

@@ -34,6 +34,8 @@ const billsSchema = mongoose.Schema({
         type: String,
         required: true
     }
+}, {
+    timestamps: true
 })
 
 const Bills = mongoose.model("Bill", billsSchema);

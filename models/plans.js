@@ -19,6 +19,8 @@ const planSchema = mongoose.Schema({
         type: String,
         required: true
     }
+}, {
+    timestamps: true
 })
 
 const Plan = mongoose.model("Plan", planSchema);
