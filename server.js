@@ -31,7 +31,7 @@ app.use(cors(corsOption))
 // Session
 app.set('trust proxy', 1)
 app.use(session({
-    secret: "secret",
+    secret: "secrets",
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -50,11 +50,16 @@ require("./config/db.connection")
 // ROUTES
 const routes = require("./routes")
 // Check if session currently has a user
-app.get('/', (req, res) => {
-    const sessionCurrentUser = req.session.currentUser;
-    if(sessionCurrentUser) res.status(200).json(sessionCurrentUser)
-    else res.status(200).send("Spentrace Backend")
+app.use( (req, res, next) => {
+    console.log(req.session)
+    next()
 })
+
+app.get('/', (req, res) => {
+    if (!req.session.currentUser) res.send("Spentrace Backend")
+    else res.json(req.session.currentUser)
+})
+
 app.use("/users", routes.users);
 app.use("/plans", routes.plans)
 app.use('/bills', routes.bills)

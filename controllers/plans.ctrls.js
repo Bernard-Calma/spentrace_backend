@@ -4,7 +4,7 @@ const db = require("../models")
 // INDEX
 // Get all plans data
 const index = (req, res) => { 
-    console.log("Route Index called");
+    console.log("Plans Route Index called");
     db.plans.find({userId: req.params.id}, (err, allPlans) => {
         // console.log("Plans Index allPlans: ", allPlans)
         try {
