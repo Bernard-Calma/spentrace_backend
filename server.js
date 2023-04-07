@@ -53,6 +53,7 @@ const routes = require("./routes")
 app.get('/', (req, res) => {
     const sessionCurrentUser = req.session.currentUser;
     if(sessionCurrentUser) res.status(200).json(sessionCurrentUser)
+    else res.status(200).send("Spentrace Backend")
 })
 app.use("/users", routes.users);
 app.use("/plans", routes.plans)
