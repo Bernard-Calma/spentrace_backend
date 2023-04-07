@@ -34,25 +34,29 @@ const loginUser = (req, res) => {
 // REGISTER
 const register = (req,res) => {
     console.log("Register route")
-    console.log(req.body)
-    db.Users.register({
-        username: req.body.username,
-        email: req.body.email
-        },
-        req.body.password,
-        (err, registeredUser) => {
-            if (err) {
-                console.log(err)
-                res.status(404).json(err)
+    const newUser = req.body;
+    // Check username format
+    const regex = /^[a-zA-Z0-9]{6,}$/
+    if(!regex.exec(req.body.username)) {
+        res.status(400).send({message: 'Username can only consist of letters and numbers'})
+    } else {
+    // Check if email or username is already used been used
+        db.Users.find({$or:[
+                {email: newUser.email}, 
+                {username: newUser.username}
+            ]}, (err, foundUser) => {
+            if(foundUser.length > 0) {
+                console.log(foundUser)
+                console.log("Username or Email is already being used")
+                res.status(400).json({message: "Username or Email is already been used."})
             } else {
-                passport.authenticate('local')(req, res, () => {
-                    registeredUser.hash = undefined;
-                    registeredUser.salt = undefined;
-                    res.status(201).json(registeredUser);
-                })
+                // Proceed with registration
+                if(newUser.password.length < 6) res.status(400).json({message: "Password should be at least 6 characters"})
+                if(newUser.password !== newUser.verifyPassword) res.status(400).json({message: "Password does not match"})
             }
-        }
-    )
+        })
+    }
+
 }
 
 // SIGNOUT
