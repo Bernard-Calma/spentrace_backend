@@ -43,26 +43,37 @@ app.use(session({
     })
 }));
 
+// Custom Middleware
+const authRequired = (req, res, next) => {
+    // Middleware to check if use exist in session.
+	if(req.session.currentUser){
+		next()
+	} else {
+		res.status(401).send('You must be logged in to do that!')
+	}
+}
+
 //  ------------------- END OF MIDDLEWARE --------------------
 
 // DATABASE
 require("./config/db.connection")
 // ROUTES
 const routes = require("./routes")
-// Check if session currently has a user
-app.use( (req, res, next) => {
-    console.log(req.session)
-    next()
-})
 
+// Check if session currently has a user
 app.get('/', (req, res) => {
     if (!req.session.currentUser) res.send("Spentrace Backend")
     else res.json(req.session.currentUser)
 })
 
+// Routes without authentication
 app.use("/users", routes.users);
-app.use("/plans", routes.plans)
-app.use('/bills', routes.bills)
+
+// Routes with authentication
+app.use("/plans", authRequired, routes.plans)
+app.use('/bills', authRequired, routes.bills)
+//  ------------------- END OF Routes --------------------
+
 
 // LISTEN
 app.listen(PORT, () => {

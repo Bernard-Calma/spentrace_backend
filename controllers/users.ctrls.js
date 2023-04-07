@@ -1,20 +1,6 @@
 const db = require("../models");
 const bcrypt = require("bcrypt"); // To hash password
 // ROUTES
-// INDEX
-// Get all users data
-const index = (req, res) => {
-    console.log("All users info retreived")
-    console.log(req.session)
-    db.Users.find({}, (err, allUsers) => {
-        try {
-            if (err) return res.status(404).json({error: err.message})
-            return res.status(200).json(allUsers);
-        } catch {
-            return res.status(200).json(allUsers);
-        }
-    })
-}
 
 // LOGIN
 const loginUser = (req, res) => {
