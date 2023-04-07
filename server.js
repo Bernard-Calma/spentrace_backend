@@ -49,6 +49,11 @@ app.use(session({
 require("./config/db.connection")
 // ROUTES
 const routes = require("./routes")
+// Check if session currently has a user
+app.get('/', (req, res) => {
+    const sessionCurrentUser = req.session.currentUser;
+    if(sessionCurrentUser) res.status(200).json(sessionCurrentUser)
+})
 app.use("/users", routes.users);
 app.use("/plans", routes.plans)
 app.use('/bills', routes.bills)
