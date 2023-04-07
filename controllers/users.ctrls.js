@@ -33,6 +33,7 @@ const loginUser = (req, res) => {
             res.status(400).send(err)
         } else {
             passport.authenticate('local')(req, res, () => {
+                req.session.currentUser = user;
                 console.log("User: ", req.session.currentUser)
                 const authUser = req.user;
                 // Remove salt and hash when sending back user info
