@@ -36,7 +36,7 @@ const register = (req,res) => {
     console.log("Register route")
     const newUser = req.body;
     // Check username format
-    const regex = /^[a-zA-Z0-9]{6,}$/
+    const regex = /[a-zA-Z0-9]$/
     if(!regex.exec(req.body.username)) {
         res.status(400).send({message: 'Username can only consist of letters and numbers'})
     } else {
@@ -51,8 +51,25 @@ const register = (req,res) => {
                 res.status(400).json({message: "Username or Email is already been used."})
             } else {
                 // Proceed with registration
-                if(newUser.password.length < 6) res.status(400).json({message: "Password should be at least 6 characters"})
+                // Password Validation
+                // if(newUser.password.length < 6) res.status(400).json({message: "Password should be at least 6 characters"})
                 if(newUser.password !== newUser.verifyPassword) res.status(400).json({message: "Password does not match"})
+                else {
+                    // Hash password
+                    newUser.password = bcrypt.hashSync(newUser.password, 10);
+                    delete newUser.verifyPassword
+                    db.Users.create(newUser, (err, createdUser) => {
+                        if (err) {
+                            console.log("Error creating new user")
+                            res.status(404).json({messsage: "Unexpected error occured"})
+                        } else {
+                            delete createdUser.password
+                            req.session.currentUser = createdUser
+                            res.status(200).json(createdUser)
+                        }
+                    })
+                }
+
             }
         })
     }
