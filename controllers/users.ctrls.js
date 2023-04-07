@@ -1,7 +1,7 @@
 const db = require("../models");
 const bcrypt = require("bcrypt"); // To hash password
-// ROUTES
 
+// ROUTES
 // LOGIN
 const loginUser = (req, res) => {
     console.log("Username tried to login: ", req.body.username)
@@ -70,14 +70,21 @@ const register = (req,res) => {
 
 // SIGNOUT
 const signout = (req,res) => {
-    req.logout()
+    // Destroy current session
+    req.session.destroy( (err) => {
+        if(err) {
+            res.status(400).send({message: "Error logging out."})
+        } else {
+            res.status(200).send({message: "Sucessfully logged out."})
+        }
+    })
+
     // console.log('User Signout: ', req.session.currentUser)
     // req.session.destroy()
     // return res.status(200).json({message: "Logout Successful"})
 }
 
 module.exports = {
-    index,
     loginUser,
     register,
     signout

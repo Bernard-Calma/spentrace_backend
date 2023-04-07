@@ -57,6 +57,8 @@ const authRequired = (req, res, next) => {
 
 // DATABASE
 require("./config/db.connection")
+//  ------------------- END OF DATABASE --------------------
+
 // ROUTES
 const routes = require("./routes")
 
