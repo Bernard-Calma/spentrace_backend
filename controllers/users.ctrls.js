@@ -58,8 +58,11 @@ const register = (req,res) => {
                     // Hash password
                     newUser.password = bcrypt.hashSync(newUser.password, 10);
                     delete newUser.verifyPassword
-                    db.Users.create(newUser, (err, createdUser) => {
-                        if (err) {
+                    // Lower case email and username
+                    newUser.email = newUser.email.toLowerCase()
+                    newUser.username = newUser.username.toLowerCase()
+                    db.Users.create(newUser, (error, createdUser) => {
+                        if (error) {
                             console.log("Error creating new user")
                             res.status(404).json({messsage: "Unexpected error occured"})
                         } else {
