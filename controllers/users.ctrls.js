@@ -1,7 +1,5 @@
 const db = require("../models");
 const bcrypt = require("bcrypt"); // To hash password
-const passport = require("passport");
-const { application } = require("express");
 // ROUTES
 // INDEX
 // Get all users data
@@ -20,40 +18,17 @@ const index = (req, res) => {
 
 // LOGIN
 const loginUser = (req, res) => {
-    req.session.cookie.currentUser = {username: "Test"}
-    console.log(req.session)
-    const user = new db.Users({
-        username: req.body.username,
-        password: req.body.password
-    })
-    req.login(user, err => {
-        
-        if(err) {
-            console.log(user)
-            res.status(400).send(err)
-        } else {
-            passport.authenticate('local')(req, res, () => {
-                req.session.currentUser = user;
-                console.log("User: ", req.session.currentUser)
-                const authUser = req.user;
-                // Remove salt and hash when sending back user info
-                authUser.salt = undefined,
-                authUser.hash = undefined
-                res.status(200).send(authUser)
-            })
+    console.log("Username tried to login: ", req.body.username)
+    db.Users.findOne({username: req.body.username.toLowerCase()}, (err, userFound) => {
+        if (!userFound) return res.status(404).json({message: "Username is not registered"})
+        else if (!bcrypt.compareSync(req.body.password, userFound.password)) return(res.status(401).json({message: "Invalid Username or Password"}))
+        else {
+            userFound.password = undefined // Remove password when sending back user data
+            req.session.currentUser = userFound; // Add user to session
+            // console.log("Login Session:", req.session)
+            return (res.status(200).json(userFound))
         }
     })
-    // console.log("Username tried to login: ", req.body.username)
-    // db.Users.findOne({username: req.body.username.toLowerCase()}, (err, userFound) => {
-    //     if (!userFound) return res.status(404).json({message: "Username is not registered"})
-    //     else if (!bcrypt.compareSync(req.body.password, userFound.password)) return(res.status(401).json({message: "Invalid Username or Password"}))
-    //     else {
-    //         userFound.password = undefined // Remove password when sending back user data
-    //         req.session.currentUser = userFound; // Add user to session
-    //         // console.log("Login Session:", req.session)
-    //         return (res.status(200).json(userFound))
-    //     }
-    // })
 }
 
 // REGISTER

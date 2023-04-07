@@ -1,9 +1,4 @@
-// Import
 const mongoose = require("mongoose");
-// Passport
-const passport = require("passport")
-const passportLocalMongoose = require("passport-local-mongoose");
-//  ------------------- END OF IMPORT --------------------
 
 const userSchema = mongoose.Schema({
     username: {
@@ -28,11 +23,6 @@ const userSchema = mongoose.Schema({
     timestamps: true
 })
 
-userSchema.plugin(passportLocalMongoose)
-
 const User = mongoose.model("User", userSchema);
-passport.use(User.createStrategy());
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
 
 module.exports = User

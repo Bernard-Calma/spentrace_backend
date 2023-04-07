@@ -1,11 +1,8 @@
 // IMPORTS
 require("dotenv").config()
 const express = require('express')
-const methodOverride = require('method-override')
-// Session
 const session = require('express-session')
 const MongoStore = require('connect-mongo')
-const passport = require("passport");
 const cors = require("cors")
 const app = express();
 //  ------------------- END OF IMPORT --------------------
@@ -29,9 +26,8 @@ const corsOption = {
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({extended: true}))
-app.use(methodOverride('_method'))
 // CORS
-app.use(cors({origin: "http://localhost:3000", credentials: true}))
+app.use(cors(corsOption))
 // Session
 app.set('trust proxy', 1)
 app.use(session({
@@ -39,17 +35,13 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 1000 * 60 * 60,
-        sameSite: 'none',
+        maxAge: 100 * 60 * 60,
     },
     store: MongoStore.create({
         mongoUrl: process.env.MONGODB_URL,
         ttl: 100 * 60 * 60
     })
 }));
-// Passport
-app.use(passport.initialize())
-app.use(passport.session())
 
 //  ------------------- END OF MIDDLEWARE --------------------
 

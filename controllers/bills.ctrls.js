@@ -2,9 +2,7 @@ const db = require("../models")
 
 // ROUTES
 const index = (req, res) => {
-    console.log("Index route (Bills) called");
-    console.log("Bills: ", req.session)
-    // console.log("Plans Index Session: ", req.params.id)
+    console.log("Bills Index called");
     db.bills.find({userId: req.params.id}, (err, allBills) => {
         // console.log("Plans Index allPlans: ", allPlans)
         try {
