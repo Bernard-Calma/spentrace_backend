@@ -4,10 +4,10 @@ const db = require("../models")
 // INDEX
 // Get all plans data
 const index = (req, res) => {
-    console.log("Plans Route Index called");
+    // Grab session currentUser and use the ID to get all plans registered to user
+    // console.log("Plans Route Index called");
     const loggedInUser = req.session.currentUser
     db.plans.find({userId: loggedInUser._id}, (err, allPlans) => {
-        console.log("Plans Index allPlans: ", allPlans)
         try {
             if (err) return res.status(404).json({error: err.message})
             return res.status(200).json(allPlans)
