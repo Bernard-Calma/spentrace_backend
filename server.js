@@ -39,7 +39,7 @@ app.use(session({
     },
     store: MongoStore.create({
         mongoUrl: process.env.MONGODB_URL,
-        ttl: 100 * 60 * 60
+        ttl: 1000 * 60 * 60
     })
 }));
 
