@@ -15,7 +15,7 @@ const loginUser = async (req, res) => {
       }
       userFound.password = undefined
       req.session.currentUser = userFound
-      console.log("Added user in session: ", req.session)
+    //   console.log("Added user in session: ", req.session)
       return res.status(200).json({
         user: userFound,
         session: req.session
