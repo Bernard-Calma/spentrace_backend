@@ -17,6 +17,7 @@ const index = (req, res) => {
 
 const create = (req, res) => {
     console.log("Add bill called");
+    // console.log(req.body)
     db.bills.create(req.body, (err, newBill) => {
         try {
             if(err) return res.status(404).json({error: err.message})
@@ -30,26 +31,26 @@ const create = (req, res) => {
 
 const destroy = (req, res) => {
     console.log("Delete Route Called")
-    db.bills.findByIdAndDelete(req.params.id, (err, deletedBIll) => {
+    db.bills.findByIdAndDelete(req.params.id, (error, deletedBIll) => {
         try {
             if (err) return (res.status(400).json({err: err.message}))
             console.log("Successfully Deleted", deletedBIll._id)
-            return res.status(200).json({message: deletedBIll})
+            return res.status(200).json(deletedBIll)
         } catch {
-            return res.status(200).json({message: deletedBIll})
+            return res.status(200).json(deletedBIll)
         }
     })
 }
 
 const edit = (req, res) => {
     console.log("Edit Bill Called: ")
-    db.bills.findByIdAndUpdate(req.params.id, req.body, (err, editedBill) => {
+    db.bills.findByIdAndUpdate(req.params.id, req.body, (error, editedBill) => {
         try {
             if (err) return (res.status(400).json({err: err.message}))
             console.log("Successfully Edited", editedBill._id)
-            return res.status(200).json({message: editedBill})
+            return res.status(200).json(editedBill)
         } catch {
-            return res.status(200).json({message: editedBill})
+            return res.status(200).json(editedBill)
         }
     })
 }

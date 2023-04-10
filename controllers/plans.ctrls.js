@@ -34,11 +34,11 @@ const destroy = (req, res) => {
     console.log("Delete requested")
     db.plans.findByIdAndDelete(req.params.id, (err, deletedVideo) => {
         try {
-            if (err) return (res.status(400).json({err: err.message}))
-            console.log("Successfully Deleted", deletedVideo)
-            return res.status(200).json({message: deletedVideo})
+            if (err) return (res.status(400).json({error: err.message}))
+            console.log("Successfully Deleted", deletedVideo._id)
+            return res.status(200).json(deletedVideo)
         } catch {
-            return res.status(200).json({message: deletedVideo})
+            return res.status(200).json(deletedVideo)
         }
     })
 }
