@@ -11,7 +11,7 @@ const app = express();
 var env = process.env.NODE_ENV || 'development'
 const PORT = process.env.PORT || 8000;
 // Cors
-const whiteList = ["http://localhost:3000", process.env.CLIENT_URL, process.env.CLIENT_URL_HTTP, process.env.HEROKU_URL, process.env.HEROKU_URL_HTTP ]
+const whiteList = ["http://localhost:3000", process.env.CLIENT_URL ]
 const corsOption = {
     origin: (origin, callback) => {
         if(whiteList.indexOf(origin) !== -1 || !origin) {
@@ -31,7 +31,7 @@ app.use(cors(corsOption))
 // Session
 app.set('trust proxy', 1)
 app.use(session({
-    secret: "secrets",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
