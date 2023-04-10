@@ -6,6 +6,7 @@ const db = require("../models")
 const index = (req, res) => {
     // Grab session currentUser and use the ID to get all plans registered to user
     console.log("Plans Route Index called");
+    console.log(req.session)
     const loggedInUser = req.session.currentUser
     db.plans.find({userId: loggedInUser._id}, (err, allPlans) => {
         try {
