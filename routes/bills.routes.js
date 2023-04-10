@@ -15,8 +15,9 @@ const authRequired = (req, res, next) => {
 	// 	// res.redirect('/user/signin')
 	// }
 }
+
+router.get('/', authRequired, ctrls.bills.index)
 router.post('/', authRequired, ctrls.bills.create)
-router.get('/:id', authRequired, ctrls.bills.index)
 router.delete('/:id', authRequired, ctrls.bills.destroy)
 router.put('/:id', authRequired, ctrls.bills.edit)
 

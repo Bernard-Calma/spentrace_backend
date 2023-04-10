@@ -3,7 +3,7 @@ const db = require("../models")
 // ROUTES
 const index = (req, res) => {
     // Grab session currentUser and use the ID to get all bills registered to user
-    // console.log("Plans Route Index called");
+    // console.log("Bills Route Index called");
     const loggedInUser = req.session.currentUser
     db.bills.find({userId: loggedInUser._id}, (err, allBills) => {
         try {
