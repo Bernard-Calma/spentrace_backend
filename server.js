@@ -46,6 +46,7 @@ app.use(session({
 // Custom Middleware
 const authRequired = (req, res, next) => {
     // Middleware to check if use exist in session.
+    console.log("AuthRequired", req.session)
 	if(req.session.currentUser){
 		next()
 	} else {
