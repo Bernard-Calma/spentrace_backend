@@ -10,34 +10,26 @@ const app = express();
 // ENV
 var env = process.env.NODE_ENV || 'development'
 const PORT = process.env.PORT || 8000;
-// Cors
-const whiteList = ["http://localhost:3000", process.env.CLIENT_URL ]
-const corsOption = {
-    origin: (origin, callback) => {
-        if(whiteList.indexOf(origin) !== -1 || !origin) {
-            callback(null, true)
-        } else {
-            callback(new Error("Not allowed by CORS"))
-        }
-    }, credentials: true
-}
 //  ------------------- END OF ENV --------------------
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({extended: true}))
 // CORS
-app.use(cors(corsOption))
+app.use(cors({
+    credentials: true,
+    origin: [process.env.CLIENT_URL]
+}))
 // Session
 app.set('trust proxy', 1)
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    resave: false,
+    resave: true,
     saveUninitialized: false,
     secure: process.env.NODE_ENV ? true : false,
     cookie: {
-        httpOnly: false,
-        maxAge: 1000 * 60 * 60,
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        secure: process.env.NODE_ENV === "production"
     },
     store: MongoStore.create({
         mongoUrl: process.env.MONGODB_URL,
