@@ -31,9 +31,9 @@ const create = (req, res) => {
 
 const destroy = (req, res) => {
     console.log("Delete Route Called")
-    db.bills.findByIdAndDelete(req.params.id, (error, deletedBIll) => {
+    db.bills.findByIdAndDelete(req.params.id, (err, deletedBIll) => {
         try {
-            if (err) return (res.status(400).json({err: err.message}))
+            if (err) return (res.status(400).json({error: err.message}))
             console.log("Successfully Deleted", deletedBIll._id)
             return res.status(200).json(deletedBIll)
         } catch {
@@ -44,10 +44,17 @@ const destroy = (req, res) => {
 
 const edit = (req, res) => {
     console.log("Edit Bill Called: ")
-    db.bills.findByIdAndUpdate(req.params.id, req.body, (error, editedBill) => {
+    db.bills.findByIdAndUpdate(req.params.id, 
+        {
+            $set: req.body,
+        }, 
+        {
+            new: true,
+        }, 
+        (err, editedBill) => {
         try {
-            if (err) return (res.status(400).json({err: err.message}))
-            console.log("Successfully Edited", editedBill._id)
+            if (err) return (res.status(400).json({error: err.message}))
+            console.log("Successfully Edited", editedBill)
             return res.status(200).json(editedBill)
         } catch {
             return res.status(200).json(editedBill)
