@@ -3,28 +3,22 @@ const bcrypt = require("bcrypt"); // To hash password
 
 // ROUTES
 // LOGIN
-const loginUser = async (req, res) => {
-    try {
-      const userFound = await db.Users.findOne({username: req.body.username.toLowerCase()})
-      if (!userFound) {
-        return res.status(404).json({message: "Username is not registered"})
-      }
-      const isMatch = await bcrypt.compare(req.body.password, userFound.password)
-      if (!isMatch) {
-        return res.status(401).json({message: "Invalid Username or Password"})
-      }
-      userFound.password = undefined
-      req.session.currentUser = userFound
-    //   console.log("Added user in session: ", req.session)
-      return res.status(200).json({
-        user: userFound,
-        session: req.session
-      })
-    } catch (err) {
-      console.error(err)
-      return res.status(500).json({message: "Internal Server Error"})
-    }
-  }
+const loginUser = (req, res) => {
+    console.log("Username tried to login: ", req.body.username)
+    db.Users.findOne({username: req.body.username.toLowerCase()}, (err, userFound) => {
+        if (!userFound) return res.status(404).json({message: "Username is not registered"})
+        else if (!bcrypt.compareSync(req.body.password, userFound.password)) return(res.status(401).json({message: "Invalid Username or Password"}))
+        else {
+            userFound.password = undefined // Remove password when sending back user data
+            req.session.currentUser = userFound; // Add user to session
+            console.log("Added user in session: ", req.session)
+            return (res.status(200).json({
+                user: userFound,
+                session: req.session
+            }))
+        }
+    })
+}
 
 // REGISTER
 const register = (req,res) => {
