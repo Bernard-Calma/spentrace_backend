@@ -2,6 +2,9 @@
 require("dotenv").config()
 const express = require('express')
 const session = require('express-session')
+const passport = require('passport')
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const findOrCreate = require('mongoose-findorcreate')
 const MongoStore = require('connect-mongo')
 const cors = require("cors")
 const app = express();
@@ -37,6 +40,18 @@ app.use(session({
     })
 }));
 
+passport.use(new GoogleStrategy({
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    callbackURL: "http://localhost:3000/auth/google/spentrace"
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    User.findOrCreate({ googleId: profile.id }, function (err, user) {
+      return cb(err, user);
+    });
+  }
+));
+
 // Custom Middleware
 const authRequired = (req, res, next) => {
     // Middleware to check if use exist in session.
@@ -66,6 +81,10 @@ app.get('/', (req, res) => {
 // Routes without authentication
 app.use("/users", routes.users);
 
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile'] }));
+
+  
 // Routes with authentication
 app.use("/plans", authRequired, routes.plans)
 app.use('/bills', authRequired, routes.bills)
