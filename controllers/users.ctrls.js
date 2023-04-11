@@ -11,7 +11,7 @@ const loginUser = (req, res) => {
         else {
             userFound.password = undefined // Remove password when sending back user data
             req.session.currentUser = userFound; // Add user to session
-            // console.log("Added user in session: ", req.session)
+            console.log("Added user in session: ", req.session)
             return (res.status(200).json({
                 user: userFound,
                 session: req.session
