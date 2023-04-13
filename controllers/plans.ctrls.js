@@ -5,14 +5,14 @@ const db = require("../models")
 // Get all plans data
 const index = (req, res) => {
     // Grab session currentUser and use the ID to get all plans registered to user
-    console.log("Plans Route Index called");
+    // console.log("Plans Route Index called");
     // console.log(req.session)
     db.Users.findOne({username: req.session.passport.user}, (err, foundUser) => {
         if (err) {
             console.log(err)
         } else {
             // console.log(foundUser._id)
-            db.Plans.find({userID: foundUser._id}, (err, foundPlans) => {
+            db.Plans.find({user: foundUser._id}, (err, foundPlans) => {
                 if (err) {
                     console.log(err)
                 } else {
@@ -26,8 +26,8 @@ const index = (req, res) => {
 
 const create = (req, res) => {
     console.log("Add plan called");
-    console.log(req.body)
-    console.log(req.session.passport.user)
+    // console.log(req.body)
+    // console.log(req.session.passport.user)
     db.Users.findOne({username: req.session.passport.user}, (err, foundUser) => {
         if (err) {
             console.log(err)
@@ -43,20 +43,11 @@ const create = (req, res) => {
             })
         }
     })
-    // db.Plans.create(req.body, (err, newBill) => {
-    //     try {
-    //         if(err) return res.status(404).json({error: err.message})
-    //         console.log("Successfully Added", newBill)
-    //         return res.status(200).json(newBill)
-    //     } catch {
-    //         return res.status(200).json(newBill)
-    //     }
-    // })
 }
 
 const destroy = (req, res) => { 
     console.log("Delete requested")
-    db.plans.findByIdAndDelete(req.params.id, (err, deletedVideo) => {
+    db.Plans.findByIdAndDelete(req.params.id, (err, deletedVideo) => {
         try {
             if (err) return (res.status(400).json({error: err.message}))
             console.log("Successfully Deleted", deletedVideo._id)
@@ -69,7 +60,7 @@ const destroy = (req, res) => {
 
 const update = (req, res) => {
     console.log("Edit Route Called", req.params.id)
-    db.plans.findByIdAndUpdate(req.params.id, {
+    db.Plans.findByIdAndUpdate(req.params.id, {
         $set: req.body,
     }, {
         new: true,

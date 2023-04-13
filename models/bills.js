@@ -30,7 +30,7 @@ const billsSchema = mongoose.Schema({
         type: Date,
     },
     notes: String,
-    userId: {
+    user: {
         type: String,
         required: true
     }
