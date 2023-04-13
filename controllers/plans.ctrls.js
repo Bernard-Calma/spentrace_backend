@@ -6,16 +6,22 @@ const db = require("../models")
 const index = (req, res) => {
     // Grab session currentUser and use the ID to get all plans registered to user
     console.log("Plans Route Index called");
-    console.log(req.session)
-    const loggedInUser = req.session.currentUser
-    db.plans.find({userId: loggedInUser._id}, (err, allPlans) => {
-        try {
-            if (err) return res.status(404).json({error: err.message})
-            return res.status(200).json(allPlans)
-        } catch {
-            return res.status(200).json(allPlans)
+    // console.log(req.session)
+    db.Users.findOne({username: req.session.passport.user}, (err, foundUser) => {
+        if (err) {
+            console.log(err)
+        } else {
+            // console.log(foundUser._id)
+            db.Plans.find({userID: foundUser._id}, (err, foundPlans) => {
+                if (err) {
+                    console.log(err)
+                } else {
+                    // console.log(foundPlans)
+                    res.status(200).json(foundPlans)
+                }
+            })
         }
-    }).sort({date: "asc"})
+    })
 }
 
 const create = (req, res) => {

@@ -15,7 +15,7 @@ const planSchema = mongoose.Schema({
         required: true,
     },
     notes: String,
-    userId: {
+    user: {
         type: String,
         required: true
     }

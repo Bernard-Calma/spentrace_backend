@@ -46,12 +46,13 @@ app.use(passport.session())
 // Custom Middleware
 const authRequired = (req, res, next) => {
   // Middleware to check if use exist in session.
-  console.log("AuthRequired", req.session)
-	if(req.session.currentUser){
-		next()
-	} else {
-		res.status(401).send('You must be logged in to do that!')
-	}
+  // console.log("AuthRequired", req.session)
+	// if(req.session.currentUser){
+	// 	next()
+	// } else {
+	// 	res.status(401).send('You must be logged in to do that!')
+	// }
+  next()
 }
 
 //  ------------------- END OF MIDDLEWARE --------------------
