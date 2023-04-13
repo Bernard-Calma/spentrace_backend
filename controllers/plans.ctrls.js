@@ -26,15 +26,32 @@ const index = (req, res) => {
 
 const create = (req, res) => {
     console.log("Add plan called");
-    db.plans.create(req.body, (err, newBill) => {
-        try {
-            if(err) return res.status(404).json({error: err.message})
-            console.log("Successfully Added", newBill)
-            return res.status(200).json(newBill)
-        } catch {
-            return res.status(200).json(newBill)
+    console.log(req.body)
+    console.log(req.session.passport.user)
+    db.Users.findOne({username: req.session.passport.user}, (err, foundUser) => {
+        if (err) {
+            console.log(err)
+        } else {
+            // console.log(foundUser._id)
+            db.Plans.create({...req.body, user: foundUser._id}, (err, createdPlan) => {
+                if (err) {
+                    console.log(err)
+                } else {
+                    console.log(createdPlan)
+                    res.status(200).json(createdPlan)
+                }
+            })
         }
     })
+    // db.Plans.create(req.body, (err, newBill) => {
+    //     try {
+    //         if(err) return res.status(404).json({error: err.message})
+    //         console.log("Successfully Added", newBill)
+    //         return res.status(200).json(newBill)
+    //     } catch {
+    //         return res.status(200).json(newBill)
+    //     }
+    // })
 }
 
 const destroy = (req, res) => { 
