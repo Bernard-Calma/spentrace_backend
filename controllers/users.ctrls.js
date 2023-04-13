@@ -1,71 +1,45 @@
 const db = require("../models");
-const bcrypt = require("bcrypt"); // To hash password
+const passport = require('passport')
 
 // ROUTES
 // LOGIN
 const loginUser = (req, res) => {
-    console.log("Username tried to login: ", req.body.username)
-    db.Users.findOne({username: req.body.username.toLowerCase()}, (err, userFound) => {
-        if (!userFound) return res.status(404).json({message: "Username is not registered"})
-        else if (!bcrypt.compareSync(req.body.password, userFound.password)) return(res.status(401).json({message: "Invalid Username or Password"}))
-        else {
-            userFound.password = undefined // Remove password when sending back user data
-            req.session.currentUser = userFound; // Add user to session
-            console.log("Added user in session: ", req.session)
-            return (res.status(200).json({
-                user: userFound,
-                session: req.session
-            }))
+    const user = new db.Users({
+        username: req.body.username,
+        password: req.body.password
+    })
+    req.login(user, err => {
+        if (err) {
+            console.log(err)
+            res.status(400).json(err)
+        }else {
+            // console.log("New user created: ", user)
+            passport.authenticate("local")(req, res, () => {
+                // console.log(req.session.passport)
+                res.status(200).json(req.session.passport)
+            })
         }
     })
 }
 
 // REGISTER
 const register = (req,res) => {
-    console.log("Register route")
-    const newUser = req.body;
-    // Check username format
-    const regex = /[a-zA-Z0-9]$/
-    if(!regex.exec(req.body.username)) {
-        return res.status(400).send({message: 'Username can only consist of letters and numbers'})
-    } else {
-    // Check if email or username is already used been used
-        db.Users.find({$or:[
-                {email: newUser.email}, 
-                {username: newUser.username}
-            ]}, (err, foundUser) => {
-            if(foundUser.length > 0) {
-                // console.log(foundUser.length)
-                console.log("Username or Email is already being used")
-                return res.status(400).json({message: "Username or Email is already been used."})
-            } else {
-                // Proceed with registration
-                // Password Validation
-                if(newUser.password.length < 6) res.status(400).json({message: "Password should be at least 6 characters"})
-                if(newUser.password !== newUser.verifyPassword) res.status(400).json({message: "Password does not match"})
-                else {
-                    // Hash password
-                    newUser.password = bcrypt.hashSync(newUser.password, 10);
-                    delete newUser.verifyPassword
-                    // Lower case email and username
-                    newUser.email = newUser.email.toLowerCase()
-                    newUser.username = newUser.username.toLowerCase()
-                    db.Users.create(newUser, (error, createdUser) => {
-                        if (error) {
-                            console.log("Error creating new user")
-                            return res.status(404).json({messsage: "Unexpected error occured"})
-                        } else {
-                            createdUser.password = undefined
-                            req.session.currentUser = createdUser
-                            return res.status(200).json(createdUser)
-                        }
-                    })
-                }
-
-            }
-        })
-    }
-
+    const newUser = {...req.body};
+    delete newUser.password
+    delete newUser.verifyPassword
+    console.log("NewUser: ", newUser)
+    console.log("req.body: ", req.body)
+    db.Users.register(newUser, req.body.password, (err, registeredUser) => {
+        if (err) {
+            console.log(err)
+            res.status(400).json(err)
+        } else {
+            console.log("New user created: ", registeredUser)
+            passport.authenticate("local")(req, res, () => {
+                res.status(200).json(registeredUser)
+            })
+        }
+    })
 }
 
 // SIGNOUT

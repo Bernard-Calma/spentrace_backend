@@ -2,6 +2,7 @@
 require("dotenv").config()
 const express = require('express')
 const session = require('express-session')
+const passport = require('passport');
 const MongoStore = require('connect-mongo')
 const cors = require("cors")
 const app = express();
@@ -24,12 +25,13 @@ app.use(cors({
 app.set('trust proxy', 1)
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    resave: true,
-    saveUninitialized: false,
+    resave: false,
+    saveUninitialized: true,
     secure: process.env.NODE_ENV ? true : false,
     cookie: {
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        secure: process.env.NODE_ENV === "production"
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 30 * 60 * 6000,
     },
     store: MongoStore.create({
         mongoUrl: process.env.MONGODB_URL,
@@ -37,10 +39,14 @@ app.use(session({
     })
 }));
 
+// Passport
+app.use(passport.initialize())
+app.use(passport.session())
+
 // Custom Middleware
 const authRequired = (req, res, next) => {
-    // Middleware to check if use exist in session.
-    console.log("AuthRequired", req.session)
+  // Middleware to check if use exist in session.
+  console.log("AuthRequired", req.session)
 	if(req.session.currentUser){
 		next()
 	} else {
@@ -59,6 +65,7 @@ const routes = require("./routes")
 
 // Check if session currently has a user
 app.get('/', (req, res) => {
+  console.log(req.session)
     if (!req.session.currentUser) res.send("Spentrace Backend")
     else res.json(req.session.currentUser)
 })
