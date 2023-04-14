@@ -29,8 +29,8 @@ app.use(session({
     saveUninitialized: true,
     cookie: {
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        secure: false,
-        httpOnly: false,
+        secure: process.env.NODE_ENV === "production" ? true : false,
+        httpOnly: process.env.NODE_ENV === "production" ? true : false,
         maxAge: 60 * 1000,
     },
     store: MongoStore.create({
