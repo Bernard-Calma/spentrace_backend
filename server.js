@@ -61,6 +61,10 @@ app.get('/', (req, res) => {
 // Routes without authentication
 app.use("/users", routes.users);
 
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile'] }));
+
+  
 // Routes with authentication
 app.use("/plans", routes.plans)
 app.use('/bills', routes.bills)
