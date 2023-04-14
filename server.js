@@ -39,18 +39,9 @@ app.use(session({
     })
 }));
 
-// Custom Middleware
-const authRequired = (req, res, next) => {
-  // Middleware to check if use exist in session.
-  // console.log("AuthRequired", req.session)
-	// if(req.session.currentUser){
-	// 	next()
-	// } else {
-	// 	res.status(401).send('You must be logged in to do that!')
-	// }
-  next()
-}
-
+// Passport
+app.use(passport.initialize())
+app.use(passport.session())
 //  ------------------- END OF MIDDLEWARE --------------------
 
 // DATABASE
@@ -75,8 +66,8 @@ app.get('/auth/google',
 
   
 // Routes with authentication
-app.use("/plans", authRequired, routes.plans)
-app.use('/bills', authRequired, routes.bills)
+app.use("/plans", routes.plans)
+app.use('/bills', routes.bills)
 //  ------------------- END OF Routes --------------------
 
 
