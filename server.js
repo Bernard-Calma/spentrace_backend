@@ -39,10 +39,6 @@ app.use(session({
     })
 }));
 
-// Passport
-app.use(passport.initialize())
-app.use(passport.session())
-
 // Custom Middleware
 const authRequired = (req, res, next) => {
   // Middleware to check if use exist in session.
@@ -74,6 +70,10 @@ app.get('/', (req, res) => {
 // Routes without authentication
 app.use("/users", routes.users);
 
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile'] }));
+
+  
 // Routes with authentication
 app.use("/plans", authRequired, routes.plans)
 app.use('/bills', authRequired, routes.bills)
