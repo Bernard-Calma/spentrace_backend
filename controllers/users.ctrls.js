@@ -15,7 +15,7 @@ const loginUser = (req, res) => {
         }else {
             // console.log("New user created: ", user)
             passport.authenticate("local")(req, res, () => {
-                // console.log(req.session.passport)
+                console.log(req.session.passport)
                 res.status(200).json(req.session.passport)
             })
         }
