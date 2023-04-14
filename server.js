@@ -27,10 +27,9 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-    secure: process.env.NODE_ENV ? true : false,
     cookie: {
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        secure: process.env.NODE_ENV === "production",
+        secure: process.env.NODE_ENV === "production" ? true : false,
         maxAge: 30 * 60 * 6000,
     },
     store: MongoStore.create({
