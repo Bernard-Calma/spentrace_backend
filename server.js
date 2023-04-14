@@ -29,7 +29,7 @@ app.use(session({
     saveUninitialized: true,
     cookie: {
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        secure: process.env.NODE_ENV,
+        secure: process.env.NODE_ENV === "production" ? true : false,
         httpOnly: false,
         maxAge: 60 * 1000,
     },
