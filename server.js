@@ -28,6 +28,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     cookie: {
+        domain: process.env.CLIENT_URL,
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         secure: process.env.NODE_ENV === "production" ? true : false,
         maxAge: 30 * 60 * 6000,
