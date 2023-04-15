@@ -53,9 +53,9 @@ const routes = require("./routes")
 
 // Check if session currently has a user
 app.get('/', (req, res) => {
-  console.log(req.session)
+//   console.log(req.session.id)
   if (req.session.passport?.user) res.status(200).json(req.session)
-  else res.status(400).json({message: "Spentrace Backend"})
+  else res.status(401).json({message: "Spentrace Backend"})
 })
 
 // Routes without authentication

@@ -6,8 +6,8 @@ const db = require("../models")
 const index = (req, res) => {
     // Grab session currentUser and use the ID to get all plans registered to user
     // console.log("Plans Route Index called");
-    console.log(req.session)
-    console.log(process.env.NODE_ENV)
+    // console.log(req.session.id)
+    // console.log(process.env.NODE_ENV)
     db.Users.findOne({username: req.session.passport.user}, (err, foundUser) => {
         if (err) {
             console.log(err)
@@ -29,6 +29,7 @@ const create = (req, res) => {
     console.log("Add plan called");
     // console.log(req.body)
     // console.log(req.session.passport.user)
+    // console.log(req.session.id)
     db.Users.findOne({username: req.session.passport.user}, (err, foundUser) => {
         if (err) {
             console.log(err)
@@ -47,7 +48,7 @@ const create = (req, res) => {
 }
 
 const destroy = (req, res) => { 
-    console.log("Delete requested")
+    // console.log("Delete requested")
     db.Plans.findByIdAndDelete(req.params.id, (err, deletedVideo) => {
         try {
             if (err) return (res.status(400).json({error: err.message}))
@@ -60,7 +61,7 @@ const destroy = (req, res) => {
 }
 
 const update = (req, res) => {
-    console.log("Edit Route Called", req.params.id)
+    // console.log("Edit Route Called", req.params.id)
     db.Plans.findByIdAndUpdate(req.params.id, {
         $set: req.body,
     }, {

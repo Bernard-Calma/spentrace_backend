@@ -4,6 +4,7 @@ const db = require("../models")
 const index = (req, res) => {
     // Grab session currentUser and use the ID to get all bills registered to user
     // console.log("Bills Route Index called");
+    // console.log(req.session.id)
     db.Users.findOne({username: req.session.passport.user}, (err, foundUser) => {
         if (err) {
             console.log(err)
@@ -22,7 +23,7 @@ const index = (req, res) => {
 }
 
 const create = (req, res) => {
-    console.log("Add bill called");
+    // console.log("Add bill called");
     db.Users.findOne({username: req.session.passport.user}, (err, foundUser) => {
         if (err) {
             console.log(err)
@@ -41,7 +42,7 @@ const create = (req, res) => {
 }
 
 const destroy = (req, res) => {
-    console.log("Delete Route Called")
+    // console.log("Delete Route Called")
     db.Bills.findByIdAndDelete(req.params.id, (err, deletedBIll) => {
         try {
             if (err) return (res.status(400).json({error: err.message}))
@@ -54,7 +55,7 @@ const destroy = (req, res) => {
 }
 
 const edit = (req, res) => {
-    console.log("Edit Bill Called: ")
+    // console.log("Edit Bill Called: ")
     db.Bills.findByIdAndUpdate(req.params.id, 
         {
             $set: req.body,

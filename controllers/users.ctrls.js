@@ -27,8 +27,8 @@ const register = (req,res) => {
     const newUser = {...req.body};
     delete newUser.password
     delete newUser.verifyPassword
-    console.log("NewUser: ", newUser)
-    console.log("req.body: ", req.body)
+    // console.log("NewUser: ", newUser)
+    // console.log("req.body: ", req.body)
     db.Users.register(newUser, req.body.password, (err, registeredUser) => {
         if (err) {
             console.log(err)
