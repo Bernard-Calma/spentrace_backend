@@ -84,23 +84,21 @@ const create = (req, res) => {
         paid: paidStatus
     }
     console.log("New Bill: ", newBill)
-
-    // db.Users.findOne({username: req.session.passport.user}, (err, foundUser) => {
-    //     if (err) {
-    //         console.log(err)
-    //     } else {
-    //         // console.log(foundUser._id)
-    //         db.Bills.create({...req.body, user: foundUser._id}, (err, createdBill) => {
-    //             if (err) {
-    //                 console.log(err)
-    //             } else {
-    //                 console.log(createdBill)
-    //                 res.status(200).json(createdBill)
-    //             }
-    //         })
-    //     }
-    // })
-    res.send(newBill)
+    db.Users.findOne({username: req.session.passport.user}, (err, foundUser) => {
+        if (err) {
+            console.log(err)
+        } else {
+            // console.log(foundUser._id)
+            db.Bills.create({...newBill, user: foundUser._id}, (err, createdBill) => {
+                if (err) {
+                    console.log(err)
+                } else {
+                    console.log(createdBill)
+                    res.status(200).json(createdBill)
+                }
+            })
+        }
+    })
 }
 
 const destroy = (req, res) => {

@@ -9,19 +9,19 @@ const billsSchema = mongoose.Schema({
         type: Number,
         required: true
     },
-    dueDate: [{
-        type: Date,
+    dueDate: {
+        type: [],
         required: true
-    }],
+    },
     category: String,
     autoPay: {
         type: Boolean,
         default: false
     },
-    paid: [{
-        type: Boolean,
+    paid: {
+        type: [],
         default: false
-    }],
+    },
     repeat: {
         type: String,
         default: "never"
