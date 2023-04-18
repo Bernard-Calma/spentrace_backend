@@ -1,5 +1,48 @@
 const db = require("../models")
 
+const getDateYearMonthDay = (dateString) => {
+    // console.log(dateString)
+    let date = new Date(dateString)
+    // console.log(date)
+    return {
+        year: date.getFullYear(),
+        month: date.getUTCMonth(),
+        day: date.getUTCDate()
+    }
+}
+
+const getIntervals = (startDate, interval, endDate) => {
+    // Get multiple due dates from starting date, interval and end date
+    let changingDueDate = startDate
+    // Array that will contains all due dates that included on repeat
+    const dueDateArray = []
+    switch(interval){
+        case "every month":
+            // Add due date in array and increase month until end year
+            while(changingDueDate.year <= endDate.year) {
+                // Add due date in array and increase month until end month
+                while(changingDueDate.month <= endDate.month) {
+                    dueDateArray.push(changingDueDate)
+                    changingDueDate = {...changingDueDate, month: changingDueDate.month + 1}
+                    
+                }
+                changingDueDate.year += 1
+            }
+            return dueDateArray
+        default:
+            break;
+    }
+}
+
+const setPaidIntervals = (dueDates) => {
+    // Add array of paid boolean status for every due date created in interval
+    const paidArray = [];
+    for (i in dueDates) {
+        paidArray.push("false")
+    }
+    return paidArray;
+}
+
 // ROUTES
 const index = (req, res) => {
     // Grab session currentUser and use the ID to get all bills registered to user
@@ -31,48 +74,8 @@ const create = (req, res) => {
     // Create paid array on index of monthly due date array
 
     // Get Date Year, Month and Date
-    const getDateYearMonthDay = (dateString) => {
-        let date = new Date(dateString)
-        return {
-            year: date.getFullYear(),
-            month: date.getUTCMonth(),
-            day: date.getUTCDate()
-        }
-    }
-
-    const getIntervals = (startDate, interval, endDate) => {
-        // Get multiple due dates from starting date, interval and end date
-        let changingDueDate = startDate
-        // Array that will contains all due dates that included on repeat
-        const dueDateArray = []
-        switch(interval){
-            case "every month":
-                // Add due date in array and increase month until end year
-                while(changingDueDate.year <= endDate.year) {
-                    // Add due date in array and increase month until end month
-                    while(changingDueDate.month <= endDate.month) {
-                        dueDateArray.push(changingDueDate)
-                        changingDueDate = {...changingDueDate, month: changingDueDate.month + 1}
-                        
-                    }
-                    changingDueDate.year += 1
-                }
-                return dueDateArray
-            default:
-                break;
-        }
-    }
-
-    const setPaidIntervals = (dueDates) => {
-        // Add array of paid boolean status for every due date created in interval
-        const paidArray = [];
-        for (i in dueDates) {
-            paidArray.push("false")
-        }
-        return paidArray;
-    }
-
     const dueDateStart = getDateYearMonthDay(req.body.dueDate);
+    // console.log(dueDateStart)
     const endRepeatDate = getDateYearMonthDay(req.body.endRepeat);
     const dueDates = getIntervals(dueDateStart, req.body.repeat, endRepeatDate)
     const paidStatus = setPaidIntervals(dueDates)
@@ -97,7 +100,7 @@ const create = (req, res) => {
     //         })
     //     }
     // })
-    res.send("test")
+    res.send(newBill)
 }
 
 const destroy = (req, res) => {
