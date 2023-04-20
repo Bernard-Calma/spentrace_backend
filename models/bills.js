@@ -19,7 +19,7 @@ const billsSchema = mongoose.Schema({
         default: false
     },
     paid: {
-        type: [],
+        type: [Boolean],
         default: false
     },
     repeat: {

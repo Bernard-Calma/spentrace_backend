@@ -43,6 +43,26 @@ const setPaidIntervals = (dueDates) => {
     return paidArray;
 }
 
+const handleDueDateChange = (body, route = "Add") => {
+        // Get Date Year, Month and Date
+        const dueDateStart = getDateYearMonthDay(body.dueDate);
+        const endRepeatDate = getDateYearMonthDay(body.endRepeat);
+        // Get Due Date Array
+        const dueDates = getIntervals(dueDateStart, body.repeat, endRepeatDate)
+        // Assign Paid Status on each due date index
+        let paidStatus = []
+        if (route === "Add") {
+            paidStatus = setPaidIntervals(dueDates)
+        } else {
+            paidStatus = body.paid
+        }
+        // Return new edited bill with due date and paid array
+        return {...body,
+            dueDate: dueDates,
+            paid: paidStatus
+        }
+}
+
 // ROUTES
 const index = (req, res) => {
     // Grab session currentUser and use the ID to get all bills registered to user
@@ -72,18 +92,10 @@ const create = (req, res) => {
     // Get End Repeat
     // Create monthly due date array until end repeat
     // Create paid array on index of monthly due date array
-
-    // Get Date Year, Month and Date
-    const dueDateStart = getDateYearMonthDay(req.body.dueDate);
-    // console.log(dueDateStart)
-    const endRepeatDate = getDateYearMonthDay(req.body.endRepeat);
-    const dueDates = getIntervals(dueDateStart, req.body.repeat, endRepeatDate)
-    const paidStatus = setPaidIntervals(dueDates)
-    const newBill = {...req.body,
-        dueDate: dueDates,
-        paid: paidStatus
-    }
-    console.log("New Bill: ", newBill)
+    // All functions are on top
+    const newBill = handleDueDateChange(req.body)
+    // console.log("New Bill: ", newBill)
+    // res.send("test")
     db.Users.findOne({username: req.session.passport.user}, (err, foundUser) => {
         if (err) {
             console.log(err)
@@ -93,7 +105,7 @@ const create = (req, res) => {
                 if (err) {
                     console.log(err)
                 } else {
-                    console.log(createdBill)
+                    // console.log(createdBill)
                     res.status(200).json(createdBill)
                 }
             })
@@ -115,23 +127,26 @@ const destroy = (req, res) => {
 }
 
 const edit = (req, res) => {
-    // console.log("Edit Bill Called: ")
-    db.Bills.findByIdAndUpdate(req.params.id, 
-        {
-            $set: req.body,
-        }, 
-        {
-            new: true,
-        }, 
-        (err, editedBill) => {
-        try {
-            if (err) return (res.status(400).json({error: err.message}))
-            console.log("Successfully Edited", editedBill)
-            return res.status(200).json(editedBill)
-        } catch {
-            return res.status(200).json(editedBill)
-        }
-    })
+    console.log("Edit Bill Called: ")
+    console.log(req.body)
+    const billToEdit = handleDueDateChange(req.body, "Edit")
+    console.log(billToEdit)
+    // db.Bills.findByIdAndUpdate(req.params.id, 
+    //     {
+    //         $set: req.body,
+    //     }, 
+    //     {
+    //         new: true,
+    //     }, 
+    //     (err, editedBill) => {
+    //     try {
+    //         if (err) return (res.status(400).json({error: err.message}))
+    //         console.log("Successfully Edited", editedBill)
+    //         return res.status(200).json(editedBill)
+    //     } catch {
+    //         return res.status(200).json(editedBill)
+    //     }
+    // })
 }
 
 module.exports = {
