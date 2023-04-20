@@ -12,21 +12,47 @@ const getDateYearMonthDay = (dateString) => {
 }
 
 const getIntervals = (startDate, interval, endDate) => {
+    // Calculate milliseconds in a year
+    const minute = 1000 * 60;
+    const hour = minute * 60;
+    const day = hour * 24;
+    const year = day * 365;
     // Get multiple due dates from starting date, interval and end date
-    let changingDueDate = startDate
+    // let changingDueDate = startDate
     // Array that will contains all due dates that included on repeat
+
+    // Get total miliseconds of dates
+    const parseStartDate = Date.parse(startDate)
+    const parseEndDate = Date.parse(endDate)
+    let changingDueDate = parseStartDate
+    // Total Miliseconds to days
+    const totalDays = (Number(parseEndDate) - Number(parseStartDate))
+    // console.log(parseStartDate)
+    // console.log(parseEndDate)
+    // console.log(totalDays)
+
     const dueDateArray = []
     switch(interval){
+        case "every week":
+            while(changingDueDate <= parseEndDate) {
+                console.log(new Date(changingDueDate));
+                // dueDateArray.push(new Date(changingDueDate));
+                changingDueDate += day * 7;
+            }
+            return dueDateArray
+        case "every 2 weeks":
+            while(changingDueDate <= parseEndDate) {
+                // console.log(new Date(changingDueDate));
+                dueDateArray.push(new Date(changingDueDate));
+                changingDueDate += day * 14;
+            }
+            return dueDateArray
         case "every month":
-            // Add due date in array and increase month until end year
-            while(changingDueDate.year <= endDate.year) {
-                // Add due date in array and increase month until end month
-                while(changingDueDate.month <= endDate.month) {
-                    dueDateArray.push(changingDueDate)
-                    changingDueDate = {...changingDueDate, month: changingDueDate.month + 1}
-                    
-                }
-                changingDueDate.year += 1
+            var changingDate = startDate
+            var dateIndex = startDate.getMonth()
+            while (dateIndex <= endDate.getMonth()) {
+                dueDateArray.push(new Date(changingDate.setMonth(dateIndex)))
+                dateIndex += 1
             }
             return dueDateArray
         default:
@@ -45,10 +71,10 @@ const setPaidIntervals = (dueDates) => {
 
 const handleDueDateChange = (body, route = "Add") => {
         // Get Date Year, Month and Date
-        const dueDateStart = getDateYearMonthDay(body.dueDate);
-        const endRepeatDate = getDateYearMonthDay(body.endRepeat);
+        // const dueDateStart = getDateYearMonthDay(body.dueDate);
+        // const endRepeatDate = getDateYearMonthDay(body.endRepeat);
         // Get Due Date Array
-        const dueDates = getIntervals(dueDateStart, body.repeat, endRepeatDate)
+        const dueDates = getIntervals(new Date(body.dueDate), body.repeat, new Date(body.endRepeat))
         // Assign Paid Status on each due date index
         let paidStatus = []
         if (route === "Add") {
@@ -94,23 +120,24 @@ const create = (req, res) => {
     // Create paid array on index of monthly due date array
     // All functions are on top
     const newBill = handleDueDateChange(req.body)
-    // console.log("New Bill: ", newBill)
-    // res.send("test")
-    db.Users.findOne({username: req.session.passport.user}, (err, foundUser) => {
-        if (err) {
-            console.log(err)
-        } else {
-            // console.log(foundUser._id)
-            db.Bills.create({...newBill, user: foundUser._id}, (err, createdBill) => {
-                if (err) {
-                    console.log(err)
-                } else {
-                    // console.log(createdBill)
-                    res.status(200).json(createdBill)
-                }
-            })
-        }
-    })
+    console.log("New Bill: ", newBill)
+    // console.log(req.body)
+    res.send("test")
+    // db.Users.findOne({username: req.session.passport.user}, (err, foundUser) => {
+    //     if (err) {
+    //         console.log(err)
+    //     } else {
+    //         // console.log(foundUser._id)
+    //         db.Bills.create({...newBill, user: foundUser._id}, (err, createdBill) => {
+    //             if (err) {
+    //                 console.log(err)
+    //             } else {
+    //                 // console.log(createdBill)
+    //                 res.status(200).json(createdBill)
+    //             }
+    //         })
+    //     }
+    // })
 }
 
 const destroy = (req, res) => {
