@@ -1,16 +1,5 @@
 const db = require("../models")
 
-const getDateYearMonthDay = (dateString) => {
-    // console.log(dateString)
-    let date = new Date(dateString)
-    // console.log(date)
-    return {
-        year: date.getFullYear(),
-        month: date.getUTCMonth(),
-        day: date.getUTCDate()
-    }
-}
-
 const getIntervals = (startDate, interval, endDate) => {
     // Calculate milliseconds in a year
     const minute = 1000 * 60;
@@ -25,18 +14,13 @@ const getIntervals = (startDate, interval, endDate) => {
     const parseStartDate = Date.parse(startDate)
     const parseEndDate = Date.parse(endDate)
     let changingDueDate = parseStartDate
-    // Total Miliseconds to days
-    const totalDays = (Number(parseEndDate) - Number(parseStartDate))
-    // console.log(parseStartDate)
-    // console.log(parseEndDate)
-    // console.log(totalDays)
 
     const dueDateArray = []
     switch(interval){
         case "every week":
             while(changingDueDate <= parseEndDate) {
-                console.log(new Date(changingDueDate));
-                // dueDateArray.push(new Date(changingDueDate));
+                // console.log(new Date(changingDueDate));
+                dueDateArray.push(new Date(changingDueDate));
                 changingDueDate += day * 7;
             }
             return dueDateArray
@@ -55,6 +39,14 @@ const getIntervals = (startDate, interval, endDate) => {
                 dateIndex += 1
             }
             return dueDateArray
+        case "every 2 months":
+            var changingDate = startDate
+            var dateIndex = startDate.getMonth()
+            while (dateIndex <= endDate.getMonth()) {
+                dueDateArray.push(new Date(changingDate.setMonth(dateIndex)))
+                dateIndex += 2
+            }
+            return dueDateArray
         default:
             break;
     }
@@ -64,15 +56,12 @@ const setPaidIntervals = (dueDates) => {
     // Add array of paid boolean status for every due date created in interval
     const paidArray = [];
     for (i in dueDates) {
-        paidArray.push("false")
+        paidArray.push(false)
     }
     return paidArray;
 }
 
 const handleDueDateChange = (body, route = "Add") => {
-        // Get Date Year, Month and Date
-        // const dueDateStart = getDateYearMonthDay(body.dueDate);
-        // const endRepeatDate = getDateYearMonthDay(body.endRepeat);
         // Get Due Date Array
         const dueDates = getIntervals(new Date(body.dueDate), body.repeat, new Date(body.endRepeat))
         // Assign Paid Status on each due date index
@@ -85,7 +74,8 @@ const handleDueDateChange = (body, route = "Add") => {
         // Return new edited bill with due date and paid array
         return {...body,
             dueDate: dueDates,
-            paid: paidStatus
+            paid: paidStatus,
+            amount: Number(body.amount)
         }
 }
 
@@ -120,24 +110,24 @@ const create = (req, res) => {
     // Create paid array on index of monthly due date array
     // All functions are on top
     const newBill = handleDueDateChange(req.body)
-    console.log("New Bill: ", newBill)
+    // console.log("New Bill: ", newBill)
     // console.log(req.body)
-    res.send("test")
-    // db.Users.findOne({username: req.session.passport.user}, (err, foundUser) => {
-    //     if (err) {
-    //         console.log(err)
-    //     } else {
-    //         // console.log(foundUser._id)
-    //         db.Bills.create({...newBill, user: foundUser._id}, (err, createdBill) => {
-    //             if (err) {
-    //                 console.log(err)
-    //             } else {
-    //                 // console.log(createdBill)
-    //                 res.status(200).json(createdBill)
-    //             }
-    //         })
-    //     }
-    // })
+    // res.send(newBill)
+    db.Users.findOne({username: req.session.passport.user}, (err, foundUser) => {
+        if (err) {
+            console.log(err)
+        } else {
+            // console.log(foundUser._id)
+            db.Bills.create({...newBill, user: foundUser._id}, (err, createdBill) => {
+                if (err) {
+                    console.log(err)
+                } else {
+                    // console.log(createdBill)
+                    res.status(200).json(createdBill)
+                }
+            })
+        }
+    })
 }
 
 const destroy = (req, res) => {
@@ -154,26 +144,26 @@ const destroy = (req, res) => {
 }
 
 const edit = (req, res) => {
-    console.log("Edit Bill Called: ")
-    console.log(req.body)
+    // console.log("Edit Bill Called: ")
+    // console.log(req.body)
     const billToEdit = handleDueDateChange(req.body, "Edit")
-    console.log(billToEdit)
-    // db.Bills.findByIdAndUpdate(req.params.id, 
-    //     {
-    //         $set: req.body,
-    //     }, 
-    //     {
-    //         new: true,
-    //     }, 
-    //     (err, editedBill) => {
-    //     try {
-    //         if (err) return (res.status(400).json({error: err.message}))
-    //         console.log("Successfully Edited", editedBill)
-    //         return res.status(200).json(editedBill)
-    //     } catch {
-    //         return res.status(200).json(editedBill)
-    //     }
-    // })
+    // console.log(billToEdit)
+    db.Bills.findByIdAndUpdate(req.params.id, 
+        {
+            $set: billToEdit,
+        }, 
+        {
+            new: true,
+        }, 
+        (err, editedBill) => {
+        try {
+            if (err) return (res.status(400).json({error: err.message}))
+            console.log("Successfully Edited", editedBill)
+            return res.status(200).json(editedBill)
+        } catch {
+            return res.status(200).json(editedBill)
+        }
+    })
 }
 
 module.exports = {
