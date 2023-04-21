@@ -81,16 +81,12 @@ const setPaidIntervals = (dueDates) => {
     return paidArray;
 }
 
-const handleDueDateChange = (body, route = "Add") => {
+const handleDueDateChange = (body) => {
         // Get Due Date Array
         const dueDates = getIntervals(new Date(body.dueDate), body.repeat, new Date(body.endRepeat))
         // Assign Paid Status on each due date index
         let paidStatus = []
-        if (route === "Add") {
-            paidStatus = setPaidIntervals(dueDates)
-        } else {
-            paidStatus = body.paid
-        }
+        paidStatus = setPaidIntervals(dueDates)
         // Return new edited bill with due date and paid array
         return {...body,
             dueDate: dueDates,
@@ -166,7 +162,7 @@ const destroy = (req, res) => {
 const edit = (req, res) => {
     // console.log("Edit Bill Called: ")
     // console.log(req.body)
-    const billToEdit = handleDueDateChange(req.body, "Edit")
+    const billToEdit = handleDueDateChange(req.body)
     // console.log(billToEdit)
     db.Bills.findByIdAndUpdate(req.params.id, 
         {
