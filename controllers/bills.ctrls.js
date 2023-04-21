@@ -16,7 +16,7 @@ const getIntervals = (startDate, interval, endDate) => {
     let changingDueDate = parseStartDate
 
     const dueDateArray = []
-    console.log(interval)
+    // console.log(interval)
     switch(interval){
         case "never":
             return startDate;
@@ -37,21 +37,34 @@ const getIntervals = (startDate, interval, endDate) => {
         case "every month":
             var changingDate = startDate
             var dateIndex = startDate.getMonth()
-            while (dateIndex <= endDate.getMonth()) {
-                dueDateArray.push(new Date(changingDate.setMonth(dateIndex)))
+            var changingYear = startDate.getFullYear()
+            while (dateIndex <= endDate.getMonth() || changingYear < endDate.getFullYear()) {
+                let insertDate = new Date(changingDate)
+                insertDate.setMonth(dateIndex)
+                insertDate.setFullYear(changingYear)
+                dueDateArray.push(insertDate)
                 dateIndex += 1
                 // if month is 11 (december)
-                if(dateIndex === 11) return dueDateArray
+                // console.log(dateIndex)
+                if(dateIndex === 12) {
+                    changingYear += 1; 
+                    dateIndex = 0; 
+                }
+                // console.log("Changing Year: ", changingYear)
+                // console.log("End Date", endDate.getFullYear()) 
+                // console.log(dateIndex <= endDate.getMonth())
+                // console.log(changingYear < endDate.getFullYear())
             }
             return dueDateArray
         case "every 2 months":
             var changingDate = startDate
             var dateIndex = startDate.getMonth()
-            while (dateIndex <= endDate.getMonth()) {
+            var changingYear = startDate.getYear()
+            while (dateIndex <= endDate.getMonth() || changingYear <= endDate.getYear()) {
                 dueDateArray.push(new Date(changingDate.setMonth(dateIndex)))
                 dateIndex += 2
                 // if month is 11 (december)
-                if(dateIndex === 11) return dueDateArray
+                if(dateIndex === 12) changingYear += 1;
             }
             return dueDateArray
         default:
@@ -165,7 +178,7 @@ const edit = (req, res) => {
         (err, editedBill) => {
         try {
             if (err) return (res.status(400).json({error: err.message}))
-            console.log("Successfully Edited", editedBill)
+            // console.log("Successfully Edited", editedBill)
             return res.status(200).json(editedBill)
         } catch {
             return res.status(200).json(editedBill)
