@@ -16,7 +16,10 @@ const getIntervals = (startDate, interval, endDate) => {
     let changingDueDate = parseStartDate
 
     const dueDateArray = []
+    console.log(interval)
     switch(interval){
+        case "never":
+            return startDate;
         case "every week":
             while(changingDueDate <= parseEndDate) {
                 // console.log(new Date(changingDueDate));
@@ -37,6 +40,8 @@ const getIntervals = (startDate, interval, endDate) => {
             while (dateIndex <= endDate.getMonth()) {
                 dueDateArray.push(new Date(changingDate.setMonth(dateIndex)))
                 dateIndex += 1
+                // if month is 11 (december)
+                if(dateIndex === 11) return dueDateArray
             }
             return dueDateArray
         case "every 2 months":
@@ -45,6 +50,8 @@ const getIntervals = (startDate, interval, endDate) => {
             while (dateIndex <= endDate.getMonth()) {
                 dueDateArray.push(new Date(changingDate.setMonth(dateIndex)))
                 dateIndex += 2
+                // if month is 11 (december)
+                if(dateIndex === 11) return dueDateArray
             }
             return dueDateArray
         default:
@@ -93,7 +100,7 @@ const index = (req, res) => {
                 if (err) {
                     console.log(err)
                 } else {
-                    // console.log(foundPlans)
+                    // console.log(foundBills)
                     res.status(200).json(foundBills)
                 }
             })
