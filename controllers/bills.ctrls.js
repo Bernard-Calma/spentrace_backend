@@ -182,9 +182,27 @@ const edit = (req, res) => {
     })
 }
 
+const patch = async (req, res) => {
+    try {
+        // Traditional approach to update an element in the array of paid
+        // console.log("Patch: ", req.body, req.params)
+        const billToEdit = await db.Bills.findById(req.params.id)
+        // console.log(billToEdit.paid[req.body.paidIndex])
+        billToEdit.paid[req.body.paidIndex] = !billToEdit.paid[req.body.paidIndex]
+        await billToEdit.save()
+        // console.log("Edited", billToEdit.paid[req.body.paidIndex])
+        return res.status(200).json(billToEdit)
+    } catch (err) {
+        console.log(err)
+    }
+
+
+}
+
 module.exports = {
     index,
     create,
     destroy,
-    edit
+    edit,
+    patch
 }
