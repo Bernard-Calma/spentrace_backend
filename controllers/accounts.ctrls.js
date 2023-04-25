@@ -1,5 +1,26 @@
 const db = require('../models')
 
+const index = (req, res) => {
+    // Grab session currentUser and use the ID to get all bills registered to user
+    // console.log("Bills Route Index called");
+    // console.log(req.session.id)
+    db.Users.findOne({username: req.session.passport.user}, (err, foundUser) => {
+        if (err) {
+            console.log(err)
+        } else {
+            // console.log(foundUser._id)
+            db.Accounts.find({user: foundUser._id}, (err, foundAccounts) => {
+                if (err) {
+                    console.log(err)
+                } else {
+                    // console.log(foundBills)
+                    res.status(200).json(foundAccounts)
+                }
+            })
+        }
+    })
+}
+
 const create = (req, res) => {
     const newAccount = req.body
     for (const [key, value] of Object.entries(newAccount)) {
@@ -28,4 +49,5 @@ const create = (req, res) => {
 
 module.exports = {
     create,
+    index
 }
