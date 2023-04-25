@@ -18,6 +18,10 @@ const accountsSchema = mongoose.Schema({
     minPayment: Number,
     interest: Number,
     loanAmount: Number,
+    user: {
+        type: String,
+        required: true
+    }
 }, {
     timestaps: true
 })
