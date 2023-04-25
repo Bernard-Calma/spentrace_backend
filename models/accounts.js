@@ -21,7 +21,6 @@ const accountsSchema = mongoose.Schema({
 }, {
     timestaps: true
 })
-console.log(accountsSchema)
 const Accounts = mongoose.model("Account", accountsSchema)
 
 module.exports = Accounts

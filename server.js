@@ -68,6 +68,7 @@ app.use("/users", routes.users);
 // Routes with authentication
 app.use("/plans", routes.plans)
 app.use('/bills', routes.bills)
+app.use('/accounts', routes.accounts)
 //  ------------------- END OF Routes --------------------
 
 
