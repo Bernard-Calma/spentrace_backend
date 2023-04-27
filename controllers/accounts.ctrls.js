@@ -38,7 +38,7 @@ const create = (req, res) => {
                 if (err) {
                     console.log(err)
                 } else {
-                    console.log(createdAccount)
+                    // console.log(createdAccount)
                     res.status(200).json(createdAccount)
                 }
             })
@@ -48,7 +48,7 @@ const create = (req, res) => {
 }
 
 const edit = (req, res) => {
-    console.log(req.body)
+    // console.log(req.body)
     db.Accounts.findByIdAndUpdate(req.params.id, 
         {
             $set: req.body,
@@ -59,7 +59,28 @@ const edit = (req, res) => {
         (err, editedAccount) => {
         try {
             if (err) return (res.status(400).json({error: err.message}))
-            console.log("Successfully Edited", editedAccount)
+            // console.log("Successfully Edited", editedAccount)
+            return res.status(200).json(editedAccount)
+        } catch {
+            return res.status(200).json(editedAccount)
+        }
+    })
+}
+
+const patch = (req, res) => {
+    // console.log(req.body)
+    // console.log(req.params.id)
+    db.Accounts.findByIdAndUpdate(req.params.id, 
+        {
+            $set: {balance: req.body.newBalance},
+        }, 
+        {
+            new: true,
+        }, 
+        (err, editedAccount) => {
+        try {
+            if (err) return (res.status(400).json({error: err.message}))
+            // console.log("Successfully Edited", editedAccount)
             return res.status(200).json(editedAccount)
         } catch {
             return res.status(200).json(editedAccount)
@@ -70,5 +91,6 @@ const edit = (req, res) => {
 module.exports = {
     create,
     index,
-    edit
+    edit,
+    patch
 }
