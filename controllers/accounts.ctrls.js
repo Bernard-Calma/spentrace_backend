@@ -47,7 +47,28 @@ const create = (req, res) => {
     // res.send(newAccount)
 }
 
+const edit = (req, res) => {
+    console.log(req.body)
+    db.Accounts.findByIdAndUpdate(req.params.id, 
+        {
+            $set: req.body,
+        }, 
+        {
+            new: true,
+        }, 
+        (err, editedAccount) => {
+        try {
+            if (err) return (res.status(400).json({error: err.message}))
+            console.log("Successfully Edited", editedAccount)
+            return res.status(200).json(editedAccount)
+        } catch {
+            return res.status(200).json(editedAccount)
+        }
+    })
+}
+
 module.exports = {
     create,
-    index
+    index,
+    edit
 }
