@@ -72,7 +72,7 @@ const patch = (req, res) => {
     // console.log(req.params.id)
     db.Accounts.findByIdAndUpdate(req.params.id, 
         {
-            $set: {balance: req.body.newBalance},
+            $set: req.body,
         }, 
         {
             new: true,
@@ -80,7 +80,7 @@ const patch = (req, res) => {
         (err, editedAccount) => {
         try {
             if (err) return (res.status(400).json({error: err.message}))
-            // console.log("Successfully Edited", editedAccount)
+            console.log("Successfully Edited", editedAccount)
             return res.status(200).json(editedAccount)
         } catch {
             return res.status(200).json(editedAccount)
