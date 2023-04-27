@@ -80,10 +80,23 @@ const patch = (req, res) => {
         (err, editedAccount) => {
         try {
             if (err) return (res.status(400).json({error: err.message}))
-            console.log("Successfully Edited", editedAccount)
+            // console.log("Successfully Updated", editedAccount)
             return res.status(200).json(editedAccount)
         } catch {
             return res.status(200).json(editedAccount)
+        }
+    })
+}
+
+const destroy = (req, res) => {
+    console.log(req.body)
+    db.Accounts.findByIdAndDelete(req.params.id, (err, deletedAccount) => {
+        try {
+            if (err) return (res.status(400).json({error: err.message}))
+            console.log("Successfully Deleted", deletedAccount)
+            return res.status(200).json(deletedAccount)
+        } catch {
+            return res.status(200).json(deletedAccount)
         }
     })
 }
@@ -92,5 +105,6 @@ module.exports = {
     create,
     index,
     edit,
-    patch
+    patch,
+    destroy
 }
