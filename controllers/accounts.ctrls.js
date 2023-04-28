@@ -3,7 +3,7 @@ const db = require('../models')
 const index = (req, res) => {
     // Grab session currentUser and use the ID to get all bills registered to user
     // console.log("Bills Route Index called");
-    console.log(req.session)
+    // console.log(req.session)
     db.Users.findOne({username: req.session.passport.user}, (err, foundUser) => {
         if (err) {
             console.log(err)
