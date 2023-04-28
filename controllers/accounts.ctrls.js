@@ -93,7 +93,7 @@ const destroy = (req, res) => {
     db.Accounts.findByIdAndDelete(req.params.id, (err, deletedAccount) => {
         try {
             if (err) return (res.status(400).json({error: err.message}))
-            console.log("Successfully Deleted", deletedAccount)
+            // console.log("Successfully Deleted", deletedAccount)
             return res.status(200).json(deletedAccount)
         } catch {
             return res.status(200).json(deletedAccount)
