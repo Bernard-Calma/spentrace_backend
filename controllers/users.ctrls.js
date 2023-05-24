@@ -15,7 +15,7 @@ const loginUser = (req, res) => {
         }else {
             // console.log("New user created: ", user)
             passport.authenticate("local")(req, res, () => {
-                console.log(req.session.passport)
+                // console.log(req.session.passport)
                 res.status(200).json(req.session.passport)
             })
         }
@@ -34,7 +34,7 @@ const register = (req,res) => {
             console.log(err)
             res.status(400).json(err)
         } else {
-            console.log("New user created: ", registeredUser)
+            // console.log("New user created: ", registeredUser)
             passport.authenticate("local")(req, res, () => {
                 res.status(200).json(registeredUser)
             })

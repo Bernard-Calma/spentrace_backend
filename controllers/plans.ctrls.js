@@ -69,7 +69,7 @@ const update = (req, res) => {
     }, (err, updatedBill) => {
         try {
             if(err) return res.status(404).json({error: err.message})
-            console.log("Successfully Edited", updatedBill._id)
+            // console.log("Successfully Edited", updatedBill._id)
             return res.status(200).json(updatedBill)
         } catch {
             return res.status(200).json(updatedBill)

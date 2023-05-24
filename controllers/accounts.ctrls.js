@@ -89,7 +89,7 @@ const patch = (req, res) => {
 }
 
 const destroy = (req, res) => {
-    console.log(req.body)
+    // console.log(req.body)
     db.Accounts.findByIdAndDelete(req.params.id, (err, deletedAccount) => {
         try {
             if (err) return (res.status(400).json({error: err.message}))

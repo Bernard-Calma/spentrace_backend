@@ -151,7 +151,7 @@ const destroy = (req, res) => {
     db.Bills.findByIdAndDelete(req.params.id, (err, deletedBIll) => {
         try {
             if (err) return (res.status(400).json({error: err.message}))
-            console.log("Successfully Deleted", deletedBIll._id)
+            // console.log("Successfully Deleted", deletedBIll._id)
             return res.status(200).json(deletedBIll)
         } catch {
             return res.status(200).json(deletedBIll)
