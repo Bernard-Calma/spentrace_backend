@@ -1,6 +1,6 @@
 const db = require("../models")
 
-const getIntervals = (startDate, interval, endDate) => {
+const getIntervals = async (startDate, interval, endDate) => {
     // Calculate milliseconds in a year
     const minute = 1000 * 60;
     const hour = minute * 60;
@@ -38,7 +38,8 @@ const getIntervals = (startDate, interval, endDate) => {
             var changingDate = startDate
             var dateIndex = startDate.getMonth()
             var changingYear = startDate.getFullYear()
-            while (dateIndex <= endDate.getMonth() || changingYear < endDate.getFullYear()) {
+            while (dateIndex <= endDate.getMonth() && changingYear <= endDate.getFullYear()) {
+                // console.log(`${changingYear} <= ${endDate.getFullYear()}`)
                 let insertDate = new Date(changingDate)
                 insertDate.setMonth(dateIndex)
                 insertDate.setFullYear(changingYear)
@@ -55,6 +56,7 @@ const getIntervals = (startDate, interval, endDate) => {
                 // console.log(dateIndex <= endDate.getMonth())
                 // console.log(changingYear < endDate.getFullYear())
             }
+            // console.log("Due Date Array", dueDateArray);
             return dueDateArray
         case "every 2 months":
             var changingDate = startDate
@@ -69,7 +71,10 @@ const getIntervals = (startDate, interval, endDate) => {
             return dueDateArray
         default:
             break;
+
+        
     }
+    
 }
 
 const setPaidIntervals = (dueDates) => {
@@ -81,12 +86,12 @@ const setPaidIntervals = (dueDates) => {
     return paidArray;
 }
 
-const handleDueDateChange = (body) => {
+const handleDueDateChange = async (body) => {
         // Get Due Date Array
-        const dueDates = getIntervals(new Date(body.dueDate), body.repeat, new Date(body.endRepeat))
+        const dueDates = await getIntervals(new Date(body.dueDate), body.repeat, new Date(body.endRepeat))
         // Assign Paid Status on each due date index
         let paidStatus = []
-        paidStatus = setPaidIntervals(dueDates)
+        paidStatus = await setPaidIntervals(dueDates)
         // Return new edited bill with due date and paid array
         return {...body,
             dueDate: dueDates,
@@ -159,11 +164,25 @@ const destroy = (req, res) => {
     })
 }
 
-const edit = (req, res) => {
-    // console.log("Edit Bill Called: ")
+const edit = async (req, res) => {
+    console.log("Edit Bill Called: ")
     // console.log(req.body)
-    const billToEdit = handleDueDateChange(req.body)
-    // console.log(billToEdit)
+    // Check if due date is changed
+    const billCheck = await db.Bills.findById(req.body._id)
+    // console.log("Bill Check", billCheck.dueDate[0].valueOf() + ' - ' + new Date(req.body.dueDate).valueOf())
+    // console.log("Bill Check", billCheck.dueDate.includes(req.body.dueDate))
+    // console.log("Due date include check", !!billCheck.dueDate.find(date => date.valueOf() === new Date(req.body.dueDate).valueOf()))
+    // check if due date is changed or still included in original due date
+    const billToEdit = {
+        ...req.body,
+        dueDate: billCheck.dueDate,
+        paid: billCheck.paid
+    }
+    // console.log(billCheck.dueDate)
+    if(!billCheck.dueDate.find(date => date.valueOf() === new Date(req.body.dueDate).valueOf())) {
+        billToEdit = await handleDueDateChange(req.body)
+    }
+    // console.log("Bill to Edit Final", billToEdit)  
     db.Bills.findByIdAndUpdate(req.params.id, 
         {
             $set: billToEdit,
@@ -173,10 +192,12 @@ const edit = (req, res) => {
         }, 
         (err, editedBill) => {
         try {
-            if (err) return (res.status(400).json({error: err.message}))
-            // console.log("Successfully Edited", editedBill)
+            if (err) {
+                return (res.status(400).json({error: err.message}))
+            }
             return res.status(200).json(editedBill)
         } catch {
+            // console.log(editedBill)
             return res.status(200).json(editedBill)
         }
     })
@@ -194,6 +215,7 @@ const patch = async (req, res) => {
         return res.status(200).json(billToEdit)
     } catch (err) {
         console.log(err)
+        return (res.status(400).json({error: err.message}))
     }
 
 
