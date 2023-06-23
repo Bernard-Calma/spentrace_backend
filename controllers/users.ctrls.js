@@ -4,21 +4,32 @@ const passport = require('passport')
 // ROUTES
 // LOGIN
 const loginUser = (req, res) => {
-    const user = new db.Users({
-        username: req.body.username,
-        password: req.body.password
-    })
-    req.login(user, err => {
-        if (err) {
-            console.log(err)
-            res.status(400).json(err)
-        }else {
-            // console.log("New user created: ", user)
-            passport.authenticate("local")(req, res, () => {
-                // console.log(req.session.passport)
-                res.status(200).json(req.session.passport)
+    // console.log("Login")
+    db.Users.findOne({username: req.body.username}, (err, foundUser) => {
+        if(err) {
+            console.log(err);
+            return res.status(400).json(err)
+        } else if (!foundUser) {
+            return res.status(400).json({message: "Username not found"})
+        } else {
+            const user = new db.Users({
+                username: req.body.username,
+                password: req.body.password
+            })
+            req.login(user, err => {
+                if (err) {
+                    console.log(err)
+                    res.status(400).json(err)
+                }else {
+                    // console.log("Login: ", user)
+                    passport.authenticate("local")(req, res, () => {
+                        // console.log(req.session.passport)
+                        res.status(200).json(req.session.passport)
+                    })
+                }
             })
         }
+
     })
 }
 
@@ -31,8 +42,8 @@ const register = (req,res) => {
     // console.log("req.body: ", req.body)
     db.Users.register(newUser, req.body.password, (err, registeredUser) => {
         if (err) {
-            console.log(err)
-            res.status(400).json(err)
+            console.log("Register Error: ", err)
+            res.status(400).json({message: "Invalid username/email."})
         } else {
             // console.log("New user created: ", registeredUser)
             passport.authenticate("local")(req, res, () => {
@@ -44,6 +55,7 @@ const register = (req,res) => {
 
 // SIGNOUT
 const signout = (req,res) => {
+    console.log("Signout")
     // Destroy current session
     req.session.destroy( (err) => {
         if(err) {
@@ -53,7 +65,7 @@ const signout = (req,res) => {
         }
     })
 
-    // console.log('User Signout: ', req.session.currentUser)
+    console.log('User Signout: ', req.session)
     // req.session.destroy()
     // return res.status(200).json({message: "Logout Successful"})
 }
