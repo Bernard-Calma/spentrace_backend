@@ -18,12 +18,23 @@ const loginUser = (req, res) => {
             })
             req.login(user, err => {
                 if (err) {
-                    console.log(err)
+                    console.log("Error: ", err)
                     res.status(400).json(err)
                 }else {
                     // console.log("Login: ", user)
-                    passport.authenticate("local")(req, res, () => {
-                        // console.log(req.session.passport)
+                    passport.authenticate("local", (err, user, info) => {
+                        // console.log("Err: ", err)
+                        // console.log("User: ", user)
+                        // console.log("Info: ", info)
+                        // console.log(req.session)
+                        if (err) return next(err)
+                        else if (!user) {
+                           return res.status(401).json(info)
+                        } else {
+                           return res.status(200).json(req.session.passport)
+                        }
+                    })(req, res, () => {
+                        console.log(req.session.passport)
                         res.status(200).json(req.session.passport)
                     })
                 }
@@ -55,7 +66,7 @@ const register = (req,res) => {
 
 // SIGNOUT
 const signout = (req,res) => {
-    console.log("Signout")
+    // console.log("Signout")
     // Destroy current session
     req.session.destroy( (err) => {
         if(err) {
@@ -65,7 +76,7 @@ const signout = (req,res) => {
         }
     })
 
-    console.log('User Signout: ', req.session)
+    // console.log('User Signout: ', req.session)no
     // req.session.destroy()
     // return res.status(200).json({message: "Logout Successful"})
 }

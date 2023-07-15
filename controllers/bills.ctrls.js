@@ -122,7 +122,7 @@ const index = (req, res) => {
     })
 }
 
-const create = (req, res) => {
+const create = async (req, res) => {
     // console.log("Add bill called");
     // Get Due Date
     // GET Repeat Interval
@@ -130,7 +130,7 @@ const create = (req, res) => {
     // Create monthly due date array until end repeat
     // Create paid array on index of monthly due date array
     // All functions are on top
-    const newBill = handleDueDateChange(req.body)
+    const newBill = await handleDueDateChange(req.body)
     // console.log("New Bill: ", newBill)
     // console.log(req.body)
     // res.send(newBill)
@@ -165,7 +165,7 @@ const destroy = (req, res) => {
 }
 
 const edit = async (req, res) => {
-    console.log("Edit Bill Called: ")
+    // console.log("Edit Bill Called: ")
     // console.log(req.body)
     // Check if due date is changed
     const billCheck = await db.Bills.findById(req.body._id)

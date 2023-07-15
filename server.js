@@ -19,7 +19,7 @@ app.use(express.urlencoded({extended: true}))
 // CORS
 app.use(cors({
     credentials: true,
-    origin: [process.env.CLIENT_URL]
+    origin: [process.env.CLIENT_URL],
 }))
 // Session
 app.set('trust proxy', 1)
@@ -53,8 +53,8 @@ const routes = require("./routes")
 
 // Check if session currently has a user
 app.get('/', (req, res) => {
-//   console.log(req.session.id)
-  if (req.session.passport?.user) res.status(200).json(req.session)
+//   console.log(req.session)
+  if (req.session.passport?.user) res.status(200).json(req.session.passport)
   else res.status(401).json({message: "Spentrace Backend"})
 })
 
