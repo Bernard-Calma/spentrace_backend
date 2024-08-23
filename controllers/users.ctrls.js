@@ -54,7 +54,7 @@ const register = (req,res) => {
     db.Users.register(newUser, req.body.password, (err, registeredUser) => {
         if (err) {
             console.log("Register Error: ", err)
-            res.status(400).json({message: "Invalid username/email."})
+            res.status(400).json({message: err})
         } else {
             // console.log("New user created: ", registeredUser)
             passport.authenticate("local")(req, res, () => {
