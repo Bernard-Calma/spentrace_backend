@@ -87,6 +87,7 @@ const setPaidIntervals = (dueDates) => {
 }
 
 const handleDueDateChange = async (body) => {
+        console.log("Handle Due Date Change: ", body)
         // Get Due Date Array
         const dueDates = await getIntervals(new Date(body.dueDate), body.repeat, new Date(body.endRepeat))
         // Assign Paid Status on each due date index
@@ -173,7 +174,7 @@ const edit = async (req, res) => {
     // console.log("Bill Check", billCheck.dueDate.includes(req.body.dueDate))
     // console.log("Due date include check", !!billCheck.dueDate.find(date => date.valueOf() === new Date(req.body.dueDate).valueOf()))
     // check if due date is changed or still included in original due date
-    const billToEdit = {
+    let billToEdit = {
         ...req.body,
         dueDate: billCheck.dueDate,
         paid: billCheck.paid

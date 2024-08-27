@@ -40,7 +40,7 @@ const create = (req, res) => {
                 if (err) {
                     console.log(err)
                 } else {
-                    console.log(createdPlan)
+                    // console.log(createdPlan)
                     res.status(200).json(createdPlan)
                 }
             })
