@@ -56,9 +56,33 @@ const destroy = (req, res) => {
             console.log("Successfully Deleted", deletedVideo._id)
             return res.status(200).json(deletedVideo)
         } catch {
+            console.log("No ID")
             return res.status(200).json(deletedVideo)
         }
     })
+}
+
+const destroyNoID = async (req,res) => {
+    const {
+        name,
+        amount,
+        date,
+        expense
+    } = req.body;
+
+    try {
+        const result = await db.Plans.findOneAndDelete({
+            name: name,
+            amount: amount,
+            date: date,
+            expense: expense
+        })
+        // console.log("Res: ", result);
+        // return res.status(200).json({data: result});
+    } catch (error) {
+        console.log("Err: ", error)
+    }
+    
 }
 
 const update = (req, res) => {
@@ -82,5 +106,6 @@ module.exports = {
     index,
     create,
     destroy,
+    destroyNoID,
     update,
 }

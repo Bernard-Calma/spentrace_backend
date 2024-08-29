@@ -5,6 +5,7 @@ const ctrls = require("../controllers")
 router.get('/', ctrls.plans.index)
 router.post('/', ctrls.plans.create)
 router.put('/:id', ctrls.plans.update)
+router.delete('/',ctrls.plans.destroyNoID)
 router.delete('/:id', ctrls.plans.destroy)
 
 module.exports = router;
