@@ -88,14 +88,14 @@ const destroyNoID = async (req,res) => {
 // Updated function for updating plans
 // Add if statement for accepting plans without any _id from frontend
 // Remove {new: true} since nothing is being returned.
-const update = async (req, res) => {
+const update = async req => {
     // console.log("Edit Route Called", req.params.id)
     if(req.params.id !== "-1") {
         // console.log(req.body)
         
     delete req.body.newData._id
         try {
-            await db.Plans.findOneAndUpdate(req.params.id, {$set: req.body.newData})
+            await db.Plans.findByIdAndUpdate(req.params.id, { $set: req.body.newData });
         } catch (err) {
             console.log("Error: ", err)
         }
