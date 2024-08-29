@@ -85,21 +85,40 @@ const destroyNoID = async (req,res) => {
     
 }
 
-const update = (req, res) => {
+// Updated function for updating plans
+// Add if statement for accepting plans without any _id from frontend
+// Remove {new: true} since nothing is being returned.
+const update = async (req, res) => {
     // console.log("Edit Route Called", req.params.id)
-    db.Plans.findByIdAndUpdate(req.params.id, {
-        $set: req.body,
-    }, {
-        new: true,
-    }, (err, updatedBill) => {
+    if(req.params.id !== "-1") {
+        // console.log(req.body)
+        
+    delete req.body.newData._id
         try {
-            if(err) return res.status(404).json({error: err.message})
-            // console.log("Successfully Edited", updatedBill._id)
-            return res.status(200).json(updatedBill)
-        } catch {
-            return res.status(200).json(updatedBill)
+            await db.Plans.findOneAndUpdate(req.params.id, {$set: req.body.newData})
+        } catch (err) {
+            console.log("Error: ", err)
         }
-    })
+    } else {
+        const {
+            name,
+            amount,
+            date,
+            expense
+        } = req.body.originalPlan;
+
+        try {
+            await db.Plans.findOneAndUpdate({
+                name: name,
+                amount: amount,
+                date: date,
+                expense: expense
+            },{ $set: req.body.newData })
+            console.log("Update success on no ID params.")
+        } catch (err) {
+            console.log("Error: ", err)
+        }
+    }
 }
 
 module.exports = {
