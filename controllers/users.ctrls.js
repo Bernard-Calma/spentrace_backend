@@ -3,46 +3,51 @@ const passport = require('passport')
 
 // ROUTES
 // LOGIN
-const loginUser = (req, res) => {
+const loginUser = async (req, res) => {
     console.log("Login")
     console.log(req.body)
-    db.Users.findOne({username: req.body.username}, (err, foundUser) => {
-        if(err) {
-            console.log(err);
-            return res.status(400).json(err)
-        } else if (!foundUser) {
-            return res.status(400).json({message: "Username not found"})
-        } else {
-            const user = new db.Users({
-                username: req.body.username,
-                password: req.body.password
-            })
-            req.login(user, err => {
-                if (err) {
-                    console.log("Error: ", err)
-                    res.status(400).json(err)
-                }else {
-                    // console.log("Login: ", user)
-                    passport.authenticate("local", (err, user, info) => {
-                        // console.log("Err: ", err)
-                        // console.log("User: ", user)
-                        // console.log("Info: ", info)
-                        // console.log(req.session)
-                        if (err) return next(err)
-                        else if (!user) {
-                           return res.status(401).json(info)
-                        } else {
-                           return res.status(200).json(req.session.passport)
-                        }
-                    })(req, res, () => {
-                        console.log(req.session.passport)
-                        res.status(200).json(req.session.passport)
-                    })
-                }
-            })
-        }
-
-    })
+    try {
+       await  db.Users.findOne({username: req.body.username}, (err, foundUser) => {
+            console.log("Found User: ", foundUser)
+            if(err) {
+                console.log(err);
+                return res.status(400).json(err)
+            } else if (!foundUser) {
+                return res.status(400).json({message: "Username not found"})
+            } else {
+                const user = new db.Users({
+                    username: req.body.username,
+                    password: req.body.password
+                })
+                req.login(user, err => {
+                    if (err) {
+                        console.log("Error: ", err)
+                        res.status(400).json(err)
+                    }else {
+                        // console.log("Login: ", user)
+                        passport.authenticate("local", (err, user, info) => {
+                            // console.log("Err: ", err)
+                            // console.log("User: ", user)
+                            // console.log("Info: ", info)
+                            // console.log(req.session)
+                            if (err) return next(err)
+                            else if (!user) {
+                               return res.status(401).json(info)
+                            } else {
+                               return res.status(200).json(req.session.passport)
+                            }
+                        })(req, res, () => {
+                            console.log(req.session.passport)
+                            res.status(200).json(req.session.passport)
+                        })
+                    }
+                })
+            }
+        }).clone()
+    } catch (error) {
+        console.log("Login Error: ", error)
+    }
+    
 }
 
 // REGISTER
