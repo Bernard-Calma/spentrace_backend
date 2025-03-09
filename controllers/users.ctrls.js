@@ -4,7 +4,8 @@ const passport = require('passport')
 // ROUTES
 // LOGIN
 const loginUser = (req, res) => {
-    // console.log("Login")
+    console.log("Login")
+    console.log(req.body)
     db.Users.findOne({username: req.body.username}, (err, foundUser) => {
         if(err) {
             console.log(err);
